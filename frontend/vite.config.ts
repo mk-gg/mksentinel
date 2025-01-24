@@ -13,7 +13,7 @@ export default defineConfig({
   },  
   server: {
     proxy: {
-      "/api": "http://localhost:8080", // Assuming your Flask server runs on port 5000
+      "/api": "https://mksentinel-backend.vercel.app", // Assuming your Flask server runs on port 5000
     },
   },
 })
