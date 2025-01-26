@@ -1,5 +1,5 @@
 import os
-from flask import Flask, app
+from flask import Flask
 from flask_cors import CORS
 from flask_login import LoginManager
 
@@ -67,6 +67,6 @@ def create_app():
 application = create_app()
 
 if __name__ == '__main__':
-    with app.app_context():
+    with application.app_context():
         db.create_all()
-    app.run(debug=True)
+    application.run(debug=True)
