@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_login import current_user, login_user, logout_user
 
+from backend.decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
 def init_routes(app):
@@ -119,13 +120,16 @@ def init_routes(app):
         login_user(user)
         return redirect(url_for('index'))
     
+    # For getting the members
     @app.route('/members', methods=['GET'])
+    @auth_required
     def get_members():
         members = Member.query.all()
         result = [member.to_json() for member in members]
         return jsonify(result)
 
     @app.route('/ban/<int:ban_id>', methods=['GET'])
+    @auth_required
     def get_ban(ban_id):
         try:
             ban = Bans.query.get(ban_id)
@@ -138,6 +142,7 @@ def init_routes(app):
     
     # Route for banning
     @app.route('/ban', methods=['POST'])
+    @admin_required
     def create_ban():
         try:
             data = request.get_json()
