@@ -172,7 +172,7 @@ def init_routes(app):
                 server_id = data['serverId'],
                 reason = data.get('reason'),
                 captured_message = data['capturedMessage'],
-                created_at = datetime.utcnow()
+                created_at = datetime.now()
             )
 
             db.session.add(new_ban)
