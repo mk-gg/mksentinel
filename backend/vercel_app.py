@@ -17,7 +17,7 @@ def create_app():
             "origins": [
                 "http://localhost:5173", 
                 "http://localhost:5000", 
-                "https://flaskbundle.vercel.app"
+                "https://mksentinel.vercel.app"
             ],
             "allow_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,
