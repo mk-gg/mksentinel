@@ -109,4 +109,4 @@ def test_env():
 data = test_auth_decorator()
 
 # print(json.dumps(data, indent=2))
-# print(API_KEY)
+print(API_KEY)

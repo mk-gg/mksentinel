@@ -17,7 +17,8 @@ def init_routes(app):
 
     @app.route('/test')
     def test():
-        return jsonify({"message": "Hello, World!"})
+        return jsonify({"message": "Hello, World!,", 
+                        "kimo": {os.environ} })
     
     @app.route('/current_user')
     def get_current_user():
