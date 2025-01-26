@@ -122,6 +122,7 @@ def init_routes(app):
     
     # For getting the members
     @app.route('/members', methods=['GET'])
+    @auth_required
     def get_members():
         members = Member.query.all()
         result = [member.to_json() for member in members]

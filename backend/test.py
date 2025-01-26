@@ -1,15 +1,17 @@
 # test_api.py
+from dotenv import load_dotenv, dotenv_values
 import requests
 import os
+load_dotenv(verbose=True)
 
 # Define the API endpoint
-url = "https://mksentinel-backend.vercel.app"
+WEBSITE_URL = "https://mksentinel-backend.vercel.app"
 API_KEY = os.environ.get('API_KEY')
 headers = {'X-API-Key': API_KEY}
 
 def get_test():
     # Make a GET request to the /test endpoint
-    response = requests.get(f'{url}/test')
+    response = requests.get(f'{WEBSITE_URL}/test')
 
     # Check the response status code
     if response.status_code == 200:
@@ -36,7 +38,7 @@ def get_members():
     try:
     
         response = requests.get(
-            f'{url}/members'
+            f'{WEBSITE_URL}/members'
         )
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
@@ -65,5 +67,33 @@ def add_ban(member_data=member_data):
         print(f"Error making request: {e}")
         return None
 
-data = add_ban()
+
+def get_ban_id():
+    try:
+        member_id = '1241650567030378527'
+        url = f'{WEBSITE_URL}/ban/{2}'
+        response = requests.get(
+            url,
+            headers=headers
+        )
+
+        # GET requests return 200 for success, not 201
+        if response.status_code == 200:
+            print(f"Successfully retrieved ban for member {member_id}")
+            return response.json()
+        else:
+            print(f"Failed to get ban. Status code: {response.status_code}")
+            print(f"Error: {response.json()}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request: {e}")
+        return None
+
+def test_env():
+    env = dotenv_values(".env")
+    key =  API_KEY
+    print(env)
+    print(key)
+
+data = test_env()
 # print(API_KEY)
