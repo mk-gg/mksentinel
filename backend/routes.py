@@ -165,6 +165,7 @@ def init_routes(app):
                     server_name=data['serverName']
                 )
                 db.session.add(server)
+                db.session.commit()  # Explicitly commit the new server
             
             # Create new ban
             new_ban = Bans(
