@@ -3,13 +3,13 @@ import requests
 import os
 
 # Define the API endpoint
-url = "https://mksentinel-backend.vercel.app/test"
+url = "https://mksentinel-backend.vercel.app"
 API_KEY = os.environ.get('API_KEY')
 headers = {'X-API-Key': API_KEY}
 
 def get_test():
     # Make a GET request to the /test endpoint
-    response = requests.get(f'{url}')
+    response = requests.get(f'{url}/test')
 
     # Check the response status code
     if response.status_code == 200:
@@ -36,7 +36,7 @@ def get_members():
     try:
     
         response = requests.get(
-            'https://mksentinel-backend.vercel.app/members'
+            f'{url}/members'
         )
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
@@ -65,5 +65,5 @@ def add_ban(member_data=member_data):
         print(f"Error making request: {e}")
         return None
 
-data = get_members()
+data = add_ban()
 # print(API_KEY)
