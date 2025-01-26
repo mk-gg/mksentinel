@@ -6,8 +6,10 @@ from flask_login import LoginManager
 from models import db
 from routes import init_routes
 
+
+app = Flask(__name__, static_folder='static', static_url_path='/')
 def create_app():
-    app = Flask(__name__, static_folder='static', static_url_path='/')
+    # app = Flask(__name__, static_folder='static', static_url_path='/')
 
     # CORS Configuration
     CORS(app, supports_credentials=True, resources={
@@ -66,6 +68,8 @@ def create_app():
 # Create app for Vercel
 application = create_app()
 
-# Optional: Create tables on startup (careful with this in production)
-with application.app_context():
-    db.create_all()
+if __name__ == '__main__':
+    # Optional: Create tables on startup (careful with this in production)
+    with application.app_context():
+        db.create_all()
+    application.run(debug=True)
