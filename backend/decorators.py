@@ -2,19 +2,20 @@ import os
 from functools import wraps
 from flask import request, jsonify
 from flask_login import current_user
-from dotenv import load_dotenv
 
-load_dotenv()
+def verify_api_key():
+    """Check if the provided API key is valid."""
+    api_key = request.headers.get('X-API-Key')
+    return api_key == os.environ.get('API_KEY')
 
 def auth_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Check for API key first
-        api_key = request.headers.get('X-API-Key')
-        if api_key == os.environ.get('API_KEY'):
+        # API key takes precedence
+        if verify_api_key():
             return f(*args, **kwargs)
             
-        # If no API key, check for OAuth login
+        # Otherwise, require OAuth login
         if not current_user.is_authenticated:
             return jsonify({"error": "Authentication required"}), 401
             
@@ -24,12 +25,11 @@ def auth_required(f):
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Check for API key first
-        api_key = request.headers.get('X-API-Key')
-        if api_key == os.environ.get('API_KEY'):
+        # API key takes precedence
+        if verify_api_key():
             return f(*args, **kwargs)
             
-        # If no API key, check for OAuth admin
+        # Otherwise, require admin OAuth login
         if not current_user.is_authenticated:
             return jsonify({"error": "Authentication required"}), 401
         if not current_user.is_admin:

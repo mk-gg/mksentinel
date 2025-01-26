@@ -1,4 +1,5 @@
 # test_api.py
+import json
 from dotenv import load_dotenv, dotenv_values
 import requests
 import os
@@ -8,6 +9,16 @@ load_dotenv(verbose=True)
 WEBSITE_URL = "https://mksentinel-backend.vercel.app"
 API_KEY = os.environ.get('API_KEY')
 headers = {'X-API-Key': API_KEY}
+
+def test_auth_decorator():
+    # Test without credentials
+    no_auth_response = requests.get(f'{WEBSITE_URL}/members')
+    print( no_auth_response.status_code == 401, "Should require authentication")
+
+    # Test with API key
+    api_key_headers = {'X-API-Key': API_KEY}
+    api_key_response = requests.get(f'{WEBSITE_URL}/members', headers=api_key_headers)
+    print( api_key_response.status_code == 200, "API key should grant access")
 
 def get_test():
     # Make a GET request to the /test endpoint
@@ -95,5 +106,7 @@ def test_env():
     print(env)
     print(key)
 
-data = get_ban_id()
+data = test_auth_decorator()
+
+# print(json.dumps(data, indent=2))
 # print(API_KEY)
