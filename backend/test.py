@@ -2,7 +2,7 @@
 import requests
 
 # Define the API endpoint
-url = "http://127.0.0.1:5000/api/test"
+url = "https://mksentinel-backend.vercel.app/api/test"
 
 # Make a GET request to the /test endpoint
 response = requests.get(url)

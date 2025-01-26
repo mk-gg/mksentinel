@@ -1,36 +1,31 @@
 import os
-from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_cors import CORS
+from flask_login import LoginManager
 
-load_dotenv()
-
-db = SQLAlchemy()
-login = LoginManager()
+from models import db
+from routes import init_routes
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static', static_url_path='/')
 
-    # CORS(app, supports_credentials=True, origins=[
-    #     "http://localhost:5173"
-    # ])
+    # CORS Configuration
+    CORS(app, supports_credentials=True, resources={
+        r"/*": {
+            "origins": [
+                "http://localhost:5173", 
+                "http://localhost:5000", 
+                "https://flaskbundle.vercel.app"
+            ],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True,
+            "max_age": 3600  # Cache preflight request
+        }
+    })
 
-    CORS(app, 
-         supports_credentials=True, 
-         origins=[os.environ.get('FRONTEND_URL', 'http://localhost:5173')])
-    
+    # Configuration
     app.config['SECRET_KEY'] = 'top secret!'
-
-    # Database configuration
-    postgres_url = os.environ.get('POSTGRES_URL')
-    if postgres_url:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:VOoLSxZeDkFRymUs@db.cpeyxarnnshkhhjfffsp.supabase.co:5432/postgres'
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.cpeyxarnnshkhhjfffsp:VOoLSxZeDkFRymUs@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
-
-    # OAuth configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.cpeyxarnnshkhhjfffsp:VOoLSxZeDkFRymUs@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
     app.config['OAUTH2_PROVIDERS'] = {
         'google': {
             'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
@@ -43,41 +38,35 @@ def create_app():
             },
             'scopes': ['https://www.googleapis.com/auth/userinfo.email'],
         },
-        'github': {
-            'client_id': os.environ.get('GITHUB_CLIENT_ID'),
-            'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
-            'authorize_url': 'https://github.com/login/oauth/authorize',
-            'token_url': 'https://github.com/login/oauth/access_token',
-            'userinfo': {
-                'url': 'https://api.github.com/user/emails',
-                'email': lambda json: json[0]['email'],
-            },
-            'scopes': ['user:email'],
-        },
     }
     app.config['ADMIN_EMAILS'] = os.environ.get('ADMIN_EMAILS', '').split(',')
-    app.config['FRONTEND_URL'] = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
-    app.config.update(
-        SESSION_COOKIE_SECURE=False, # For https
-        SESSION_COOKIE_SAMESITE='Lax',
-        SESSION_COOKIE_HTTPONLY=True
-    )
+
+    # Security configurations
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
     # Initialize extensions
     db.init_app(app)
-    login.init_app(app)
+    login = LoginManager(app)
+    login.login_view = 'index'
 
-    # login.login_view = 'main.index'
+    # Import User model for user loader
+    from models import User
 
-    # Register blueprints
-    from routes import api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
+    @login.user_loader
+    def load_user(id):
+        return db.session.get(User, int(id))
 
-    # Create database tables
-    with app.app_context():
-        db.create_all()
+    # Initialize routes
+    init_routes(app)
 
     return app
 
+# Create app and database tables
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

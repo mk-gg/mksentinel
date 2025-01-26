@@ -1,179 +1,118 @@
+import os
 import secrets
-from urllib.parse import urlencode
-from flask import Blueprint, redirect, url_for, session, current_app, request, abort, jsonify
-from flask_login import login_user, logout_user, current_user
 import requests
-from models import User
-from app import db, login
+from urllib.parse import urlencode
+from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
+from flask_login import current_user, login_user, logout_user
 
-api_bp = Blueprint('api', __name__)
+from models import db, User
 
-@login.user_loader
-def load_user(id):
-    return db.session.get(User, int(id))
+def init_routes(app):
+    @app.route('/')
+    def index():
+        return send_from_directory(app.static_folder, "index.html")
 
-@api_bp.route('/user')
-def get_user():
-    if current_user.is_authenticated:
-        return jsonify({
-            'status': 'success',
-            'data': {
-                'id': current_user.id,
-                'username': current_user.username,
-                'email': current_user.email,
-                'is_admin': current_user.is_admin,
-            }
-        })
-    return jsonify({
-        'status': 'error',
-        'message': 'Not authenticated'
-    })
-
-@api_bp.route('/test')
-def test():
-    return jsonify({
-        'status': 'success',
-        'message': 'Flask server is running'
-    })
-
-@api_bp.route('/logout')
-def logout():
-    if current_user.is_authenticated:
-        logout_user()
-        return jsonify({
-            'status': 'success',
-            'message': 'Logged out successfully'
-        })
-    return jsonify({
-        'status': 'error',
-        'message': 'No user to logout'
-    })
-
-@api_bp.route('/authorize/<provider>')
-def oauth2_authorize(provider):
-    try:
-        if not current_user.is_anonymous:
+    @app.route('/test')
+    def test():
+        return jsonify({"message": "Hello, World!"})
+    
+    @app.route('/current_user')
+    def get_current_user():
+        if current_user.is_authenticated:
             return jsonify({
-                'status': 'error',
-                'message': 'Already authenticated'
+                'user': {
+                    'id': current_user.id,
+                    'username': current_user.username,
+                    'email': current_user.email,
+                    'is_admin': current_user.is_admin
+                }
             })
+        return jsonify({'user': None}), 401
+    
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return jsonify({"status": "success"})
+    
+    @app.route('/authorize/<provider>')
+    def oauth2_authorize(provider):
+        if not current_user.is_anonymous:
+            return redirect(url_for('index'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
-            return jsonify({
-                'status': 'error',
-                'message': f'Unknown provider: {provider}'
-            }), 404
+            abort(404)
 
+        # generate a random string for the state parameter
         session['oauth2_state'] = secrets.token_urlsafe(16)
 
+        # create a query string with all the OAuth2 parameters
         qs = urlencode({
             'client_id': provider_data['client_id'],
-            'redirect_uri': url_for('api.oauth2_callback', provider=provider, _external=True),
+            'redirect_uri': url_for('oauth2_callback', provider=provider, _external=True, _scheme='https'),
             'response_type': 'code',
             'scope': ' '.join(provider_data['scopes']),
             'state': session['oauth2_state'],
         })
 
-        return jsonify({
-            'status': 'success',
-            'data': {
-                'authUrl': provider_data['authorize_url'] + '?' + qs
-            }
-        })
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
+        # redirect the user to the OAuth2 provider authorization URL
+        return redirect(provider_data['authorize_url'] + '?' + qs)
 
-@api_bp.route('/callback/<provider>')
-def oauth2_callback(provider):
-    try:
+    @app.route('/callback/<provider>')
+    def oauth2_callback(provider):
         if not current_user.is_anonymous:
-            return jsonify({
-                'status': 'error',
-                'message': 'Already authenticated'
-            })
+            return redirect(url_for('index'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
-            return jsonify({
-                'status': 'error',
-                'message': f'Unknown provider: {provider}'
-            }), 404
+            abort(404)
 
+        # if there was an authentication error, flash the error messages and exit
         if 'error' in request.args:
-            return jsonify({
-                'status': 'error',
-                'message': request.args['error']
-            }), 400
+            for k, v in request.args.items():
+                if k.startswith('error'):
+                    flash(f'{k}: {v}')
+            return redirect(url_for('index'))
 
-        if request.args.get('state') != session.get('oauth2_state'):
-            return jsonify({
-                'status': 'error',
-                'message': 'Invalid state parameter'
-            }), 401
+        # make sure that the state parameter matches the one we created in the
+        # authorization request
+        if request.args['state'] != session.get('oauth2_state'):
+            abort(401)
 
+        # make sure that the authorization code is present
         if 'code' not in request.args:
-            return jsonify({
-                'status': 'error',
-                'message': 'No code parameter'
-            }), 401
+            abort(401)
 
-        # Exchange authorization code for access token
+        # exchange the authorization code for an access token
         response = requests.post(provider_data['token_url'], data={
             'client_id': provider_data['client_id'],
             'client_secret': provider_data['client_secret'],
             'code': request.args['code'],
             'grant_type': 'authorization_code',
-            'redirect_uri': url_for('api.oauth2_callback', provider=provider, _external=True),
+            'redirect_uri': url_for('oauth2_callback', provider=provider, _external=True, _scheme='https')
         }, headers={'Accept': 'application/json'})
-
         if response.status_code != 200:
-            return jsonify({
-                'status': 'error',
-                'message': 'Failed to get access token'
-            }), 401
-
+            abort(401)
         oauth2_token = response.json().get('access_token')
         if not oauth2_token:
-            return jsonify({
-                'status': 'error',
-                'message': 'No access token received'
-            }), 401
+            abort(401)
 
-        # Get user info
+        # use the access token to get the user's email address
         response = requests.get(provider_data['userinfo']['url'], headers={
             'Authorization': 'Bearer ' + oauth2_token,
             'Accept': 'application/json',
         })
-
         if response.status_code != 200:
-            return jsonify({
-                'status': 'error',
-                'message': 'Failed to get user info'
-            }), 401
-
+            abort(401)
         email = provider_data['userinfo']['email'](response.json())
 
-        # Create or get user
+        # find or create the user in the database
         user = db.session.scalar(db.select(User).where(User.email == email))
         if user is None:
-            user = User(
-                email=email, 
-                username=email.split('@')[0],
-                is_admin=email in current_app.config['ADMIN_EMAILS']
-            )
+            user = User(email=email, username=email.split('@')[0], is_admin=email in current_app.config['ADMIN_EMAILS'])
             db.session.add(user)
             db.session.commit()
 
+        # log the user in
         login_user(user)
-        return redirect(current_app.config['FRONTEND_URL'])
-       
-
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
+        return redirect(url_for('index'))
