@@ -26,7 +26,7 @@ member_data = {
     'memberId': '1320481335349084252',
     'username': 'justinfletcher06',
     'displayName': 'Support Administrator',
-    'serverId': 410537146672349205,
+    'serverId': '410537146672349205',
     'serverName': 'Axie Infinity',
     'capturedMessage': '',
     'reason': 'Fake Support'

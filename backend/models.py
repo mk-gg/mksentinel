@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
@@ -42,7 +43,7 @@ class Bans(db.Model):
     server_id = db.Column(db.String(20), db.ForeignKey('server.server_id'), nullable=False)
     reason = db.Column(db.String(200), nullable=True)
     captured_message = db.Column(db.String(220), nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def to_json(self):
         return {
