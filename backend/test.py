@@ -95,5 +95,5 @@ def test_env():
     print(env)
     print(key)
 
-data = test_env()
+data = get_ban_id()
 # print(API_KEY)
