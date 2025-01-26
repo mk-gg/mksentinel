@@ -2,7 +2,6 @@
 import requests
 import os
 
-
 # Define the API endpoint
 url = "https://mksentinel-backend.vercel.app/test"
 API_KEY = os.environ.get('API_KEY')
@@ -34,14 +33,18 @@ member_data = {
 }
 
 def get_members(): 
-    response = requests.get(
-        'https://mksentinel-backend.vercel.app/members',
-        headers=headers
-    )
-    if response.status_code != 200:
-        print(f"Error: {response.status_code}", response.json())
+    try:
+    
+        response = requests.get(
+            'https://mksentinel-backend.vercel.app/members',
+            headers=headers
+        )
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        print(f"Response content: {e.response.text if hasattr(e, 'response') else 'No response'}")
         return None
-    return response.json()
 
 def add_ban(member_data=member_data):
     try:
@@ -63,5 +66,5 @@ def add_ban(member_data=member_data):
         print(f"Error making request: {e}")
         return None
 
-data = get_test()
+data = get_members()
 # print(API_KEY)

@@ -5,6 +5,10 @@ from flask_login import LoginManager
 
 from models import db
 from routes import init_routes
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def create_app():
     app = Flask(__name__, static_folder='static', static_url_path='/')
