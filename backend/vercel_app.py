@@ -66,6 +66,9 @@ def create_app():
 
     # Initialize routes
     init_routes(app)
+    
+    with app.app_context():
+        db.create_all()
 
     return app
 
@@ -74,6 +77,5 @@ application = create_app()
 
 if __name__ == '__main__':
     # Optional: Create tables on startup (careful with this in production)
-    with application.app_context():
-        db.create_all()
+
     application.run(debug=True)
