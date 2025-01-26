@@ -1,11 +1,13 @@
+import datetime
 import os
 import secrets
+from psycopg2 import IntegrityError
 import requests
 from urllib.parse import urlencode
 from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_login import current_user, login_user, logout_user
 
-from models import db, User
+from models import db, User, Member, Server, Bans
 
 def init_routes(app):
     @app.route('/')
@@ -116,3 +118,70 @@ def init_routes(app):
         # log the user in
         login_user(user)
         return redirect(url_for('index'))
+    
+    @app.route('/members', methods=['GET'])
+    def get_members():
+        members = Member.query.all()
+        result = [member.to_json() for member in members]
+        return jsonify(result)
+
+    @app.route('/ban/<int:ban_id>', methods=['GET'])
+    def get_ban(ban_id):
+        try:
+            ban = Bans.query.get(ban_id)
+            if not ban:
+                return jsonify({'error': 'Ban not found'}), 404
+                
+            return jsonify(ban.to_json()), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+    
+    # Route for banning
+    @app.route('/ban', methods=['POST'])
+    def create_ban():
+        try:
+            data = request.get_json()
+
+            # Check if the member does exist
+            # If not, create a new member
+            member = Member.query.filter_by(member_id=data['memberId']).first()
+            if not member:
+                member = Member(
+                    member_id = data['memberId'],
+                    username = data['username'],
+                    display_name = data['displayName']
+                )
+                db.session.add(member)
+            
+            # Check if server exists or create it
+            server = Server.query.filter_by(server_id=data['serverId']).first()
+            if not server:
+                server = Server(
+                    server_id=data['serverId'],
+                    server_name=data['serverName']
+                )
+                db.session.add(server)
+            
+            # Create new ban
+            new_ban = Bans(
+                member_id = data['memberId'],
+                server_id = data['serverId'],
+                reason = data.get('reason'),
+                captured_message = data['capturedMessage'],
+                created_at = datetime.utcnow()
+            )
+
+            db.session.add(new_ban)
+            db.session.commit()
+
+            return jsonify({
+                'message': 'Ban created successfully',
+                'ban': new_ban.to_json()
+            }), 201
+        except IntegrityError:
+            db.sesssion.rollback()
+            return jsonify({'error': 'Ban already exists'}), 409
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 400
