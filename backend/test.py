@@ -36,8 +36,7 @@ def get_members():
     try:
     
         response = requests.get(
-            'https://mksentinel-backend.vercel.app/members',
-            headers=headers
+            'https://mksentinel-backend.vercel.app/members'
         )
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
