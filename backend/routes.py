@@ -341,17 +341,20 @@ def init_routes(app):
             # Get monthly trend (last 6 months)
             six_months_ago = current_date - timedelta(days=180)
             monthly_trend = db.session.query(
-                func.strftime('%Y-%m', Bans.created_at).label('month'),
+                func.date_trunc('month', Bans.created_at).label('month'),
                 func.count(Bans.ban_id).label('count')
             ).filter(
                 Bans.created_at >= six_months_ago
             ).group_by(
                 'month'
-            ).all()
+            ).order_by('month').all()
             
             # Format monthly trend data
             monthly_trend_data = [
-                {'month': month, 'count': count}
+                {
+                    'month': month.strftime('%Y-%m'),
+                    'count': count
+                }
                 for month, count in monthly_trend
             ]
             
