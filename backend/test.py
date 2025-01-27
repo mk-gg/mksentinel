@@ -36,7 +36,7 @@ def get_test():
 def get_test_api():
     # Make a GET request to the /test endpoint
     response = requests.get(f'{WEBSITE_URL}/some-endpoint')
-
+    
     # Check the response status code
     if response.status_code == 200:
         print("Success!")

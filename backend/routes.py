@@ -10,7 +10,7 @@ from flask_login import current_user, login_user, logout_user
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
-api_key = os.environ.get('API_KEY')
+api_key = os.environ.get('API_KEY_SENTINEL')
 
 def init_routes(app):
     @app.route('/')
@@ -19,7 +19,9 @@ def init_routes(app):
 
     @app.route('/some-endpoint')
     def some_function():
-        return jsonify({"message": api_key})
+        if api_key:
+            return jsonify({"message": "API key is configured"})
+    return jsonify({"message": "API key is not configured"}), 500
 
     @app.route('/test')
     def test():
