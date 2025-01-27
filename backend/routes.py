@@ -150,14 +150,14 @@ def init_routes(app):
         return redirect(url_for('index'))
     
     # For getting the members
-    @app.route('/members', methods=['GET'])
+    @app.route('/api/members', methods=['GET'])
     @auth_required
     def get_members():
         members = Member.query.all()
         result = [member.to_json() for member in members]
         return jsonify(result)
 
-    @app.route('/ban/<int:ban_id>', methods=['GET'])
+    @app.route('/api/ban/<int:ban_id>', methods=['GET'])
     @auth_required
     def get_ban(ban_id):
         try:
@@ -170,7 +170,7 @@ def init_routes(app):
             return jsonify({'error': str(e)}), 400
     
     # Route for banning
-    @app.route('/ban', methods=['POST'])
+    @app.route('/api/ban', methods=['POST'])
     @admin_required
     def create_ban():
         try:
@@ -221,7 +221,7 @@ def init_routes(app):
             db.session.rollback()
             return jsonify({'error': str(e)}), 400
         
-    @app.route('/ban/<int:ban_id>', methods=['DELETE'])
+    @app.route('/api/ban/<int:ban_id>', methods=['DELETE'])
     @admin_required
     def delete_ban(ban_id):
         try:
@@ -263,7 +263,7 @@ def init_routes(app):
             db.session.rollback()
             return jsonify({'error': str(e)}), 400
 
-    @app.route('/bans', methods=['GET'])
+    @app.route('/api/bans', methods=['GET'])
     @auth_required
     def get_bans():
         try:
@@ -285,7 +285,7 @@ def init_routes(app):
         except Exception as e:
             return jsonify({'error': str(e)}), 400
         
-    @app.route('/server/<int:server_id>/banned-members', methods=['GET'])
+    @app.route('/api/server/<int:server_id>/banned-members', methods=['GET'])
     def get_banned_members(server_id):
         try:
             banned_members = db.session.query(Member, Bans)\
@@ -305,7 +305,7 @@ def init_routes(app):
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-    @app.route('/bans/statistics', methods=['GET'])
+    @app.route('/api/bans/statistics', methods=['GET'])
     @auth_required
     def get_ban_statistics():
         try:
