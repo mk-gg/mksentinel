@@ -22,6 +22,23 @@ def init_routes(app):
         if api_key:
             return jsonify({"message": "API key is configured"})
         return jsonify({"message": "API key is not configured"}), 500
+    
+    @app.route('/config-test')
+    def config_test():
+        admin_emails = current_app.config['ADMIN_EMAILS']
+        api_key = os.environ.get('API_KEY_SENTINEL')
+        google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
+        google_client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
+        
+        return jsonify({
+            "admin_emails_configured": bool(admin_emails) and admin_emails != [''],
+            "admin_emails": admin_emails,  # Since this is just a list of emails, it's safe to expose
+            "api_key_exists": bool(api_key),
+            "google_client_id_exists": bool(google_client_id),
+            "google_client_secret_exists": bool(google_client_secret),
+            "available_config_keys": list(current_app.config.keys()),
+            "available_env_vars": list(os.environ.keys())
+        })
 
     @app.route('/test')
     def test():
