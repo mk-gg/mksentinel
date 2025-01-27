@@ -19,7 +19,7 @@ def init_routes(app):
 
     @app.route('/some-endpoint')
     def some_function():
-        return f"The API Key is: {api_key}"
+        return jsonify({"message": api_key})
 
     @app.route('/test')
     def test():

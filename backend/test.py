@@ -33,6 +33,19 @@ def get_test():
         print(f"Error: {response.status_code}")
         print(response.text)
 
+def get_test_api():
+    # Make a GET request to the /test endpoint
+    response = requests.get(f'{WEBSITE_URL}/some-endpoint')
+
+    # Check the response status code
+    if response.status_code == 200:
+        print("Success!")
+        # Print the response data (JSON)
+        print(response.json())
+    else:
+        print(f"Error: {response.status_code}")
+        print(response.text)
+
 
 
 member_data = {
@@ -106,8 +119,10 @@ def test_env():
     print(env)
     print(key)
 
-data = test_auth_decorator()
+# data = test_auth_decorator()
 # data = get_test()
+data = get_test_api()
+
 
 # print(json.dumps(data, indent=2))
 print(API_KEY)
