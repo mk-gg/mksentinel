@@ -27,6 +27,7 @@ def init_routes(app):
     @app.route('/config-test')
     def config_test():
         admin_emails = current_app.config['ADMIN_EMAILS']
+        sentinel_key = current_app.config['API_KEY_SENTINEL']
         api_key = current_app.config['SENTINEL_SECRET']
         google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
         google_client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
@@ -35,6 +36,7 @@ def init_routes(app):
             "admin_emails_configured": bool(admin_emails) and admin_emails != [''],
             "admin_emails": admin_emails,  # Since this is just a list of emails, it's safe to expose
             "api_key_exists": bool(api_key),
+            "sentinel_key_exists": bool(sentinel_key),
             "google_client_id_exists": bool(google_client_id),
             "google_client_secret_exists": bool(google_client_secret),
             "available_config_keys": list(current_app.config.keys()),
