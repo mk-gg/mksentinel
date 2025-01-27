@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import secrets
 from psycopg2 import IntegrityError
@@ -6,6 +6,7 @@ import requests
 from urllib.parse import urlencode
 from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_login import current_user, login_user, logout_user
+from sqlalchemy import func
 
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
@@ -218,4 +219,151 @@ def init_routes(app):
 
         except Exception as e:
             db.session.rollback()
+            return jsonify({'error': str(e)}), 400
+        
+    @app.route('/ban/<int:ban_id>', methods=['DELETE'])
+    @admin_required
+    def delete_ban(ban_id):
+        try:
+            ban = Bans.query.get(ban_id)
+            if not ban:
+                return jsonify({'error': 'Ban not found'}), 404
+                
+            db.session.delete(ban)
+            db.session.commit()
+            
+            return jsonify({'message': 'Ban deleted successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 400
+
+
+    @app.route('/ban/<int:ban_id>', methods=['PUT'])
+    @admin_required
+    def update_ban(ban_id):
+        try:
+            ban = Bans.query.get(ban_id)
+            if not ban:
+                return jsonify({'error': 'Ban not found'}), 404
+                
+            data = request.get_json()
+            
+            # Update only allowed fields
+            if 'reason' in data:
+                ban.reason = data['reason']
+            if 'capturedMessage' in data:
+                ban.captured_message = data['capturedMessage']
+                
+            db.session.commit()
+            return jsonify({
+                'message': 'Ban updated successfully',
+                'ban': ban.to_json()
+            }), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 400
+
+    @app.route('/bans', methods=['GET'])
+    @auth_required
+    def get_bans():
+        try:
+            server_id = request.args.get('server_id')
+            member_id = request.args.get('member_id')
+            
+            query = Bans.query
+            
+            if server_id:
+                query = query.filter_by(server_id=server_id)
+            if member_id:
+                query = query.filter_by(member_id=member_id)
+                
+            bans = query.all()
+            return jsonify({
+                'bans': [ban.to_json() for ban in bans]
+            }), 200
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+        
+    @app.route('/server/<int:server_id>/banned-members', methods=['GET'])
+    def get_banned_members(server_id):
+        try:
+            banned_members = db.session.query(Member, Bans)\
+                .join(Bans, Member.member_id == Bans.member_id)\
+                .filter(Bans.server_id == server_id)\
+                .all()
+            
+            result = [{
+                **member.to_json(),
+                'ban_info': ban.to_json()
+            } for member, ban in banned_members]
+            
+            return jsonify({
+                'banned_members': result
+            }), 200
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+
+    @app.route('/bans/statistics', methods=['GET'])
+    @auth_required
+    def get_ban_statistics():
+        try:
+            # Get current date
+            current_date = datetime.utcnow()
+            
+            # Calculate the start of today, this month, and this year
+            start_of_today = current_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            start_of_month = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            start_of_year = current_date.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+            
+            # Get total bans
+            total_bans = db.session.query(func.count(Bans.ban_id)).scalar()
+            
+            # Get total bans today
+            total_bans_today = db.session.query(func.count(Bans.ban_id))\
+                .filter(Bans.created_at >= start_of_today).scalar()
+                
+            # Get total bans this month
+            total_bans_month = db.session.query(func.count(Bans.ban_id))\
+                .filter(Bans.created_at >= start_of_month).scalar()
+                
+            # Get total bans this year
+            total_bans_year = db.session.query(func.count(Bans.ban_id))\
+                .filter(Bans.created_at >= start_of_year).scalar()
+                
+            # Get total unique servers with bans
+            total_servers = db.session.query(func.count(func.distinct(Bans.server_id))).scalar()
+            
+            # Get total unique members banned
+            total_members = db.session.query(func.count(func.distinct(Bans.member_id))).scalar()
+            
+            # Get monthly trend (last 6 months)
+            six_months_ago = current_date - timedelta(days=180)
+            monthly_trend = db.session.query(
+                func.strftime('%Y-%m', Bans.created_at).label('month'),
+                func.count(Bans.ban_id).label('count')
+            ).filter(
+                Bans.created_at >= six_months_ago
+            ).group_by(
+                'month'
+            ).all()
+            
+            # Format monthly trend data
+            monthly_trend_data = [
+                {'month': month, 'count': count}
+                for month, count in monthly_trend
+            ]
+            
+            return jsonify({
+                'totalBans': total_bans,
+                'totalBansToday': total_bans_today,
+                'totalBansMonth': total_bans_month,
+                'totalBansYear': total_bans_year,
+                'totalServers': total_servers,
+                'totalMembers': total_members,
+                'monthlyTrend': monthly_trend_data
+            }), 200
+            
+        except Exception as e:
             return jsonify({'error': str(e)}), 400

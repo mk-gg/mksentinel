@@ -2,6 +2,7 @@ import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { useState, useEffect } from "react"
 import { HomePage } from "./Homepage"
+import { BASE_URL } from "@/config/api"
 
 interface User {
   id: number
@@ -15,7 +16,7 @@ function Login() {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("https://mksentinel.vercel.app/current_user", {
+      const response = await fetch(`${BASE_URL}/current_user`, {
         // const response = await fetch('http://localhost:5000/current_user', {
         credentials: "include",
       })
@@ -35,7 +36,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      window.location.href = "https://mksentinel.vercel.app/authorize/google"
+      window.location.href = `${BASE_URL}/authorize/google`
       // window.location.href = 'http://localhost:5000/authorize/google'
     } catch (error) {
       console.error(error)
@@ -44,7 +45,7 @@ function Login() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("https://mksentinel.vercel.app/logout", {
+      const response = await fetch(`${BASE_URL}/logout`, {
         // const response = await fetch('http://localhost:5000/logout', {
         credentials: "include",
       })
