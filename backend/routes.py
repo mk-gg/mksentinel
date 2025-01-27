@@ -10,15 +10,20 @@ from flask_login import current_user, login_user, logout_user
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
+api_key = os.environ.get('API_KEY')
+
 def init_routes(app):
     @app.route('/')
     def index():
         return send_from_directory(app.static_folder, "index.html")
 
+    @app.route('/some-endpoint')
+    def some_function():
+        return f"The API Key is: {api_key}"
+
     @app.route('/test')
     def test():
-        return jsonify({"message": "Hello, World!,", 
-                        "kimo": {os.environ} })
+        return jsonify({"message": "Hello, World!,"})
     
     @app.route('/current_user')
     def get_current_user():

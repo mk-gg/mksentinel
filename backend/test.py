@@ -107,6 +107,7 @@ def test_env():
     print(key)
 
 data = test_auth_decorator()
+# data = get_test()
 
 # print(json.dumps(data, indent=2))
 print(API_KEY)
