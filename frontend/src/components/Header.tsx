@@ -3,20 +3,15 @@ import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { useAuth } from "../contexts/AuthContext"
 
-interface User {
-  username: string
-  email: string
-}
-
-interface HeaderProps {
-  user: User
-  onLogout: () => void
-  onNavigate: (path: string) => void
-}
-
-export function Header({ user, onLogout, onNavigate}: HeaderProps) {
+export function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  if (!user) {
+    return null // Don't render the header if there's no user
+  }
 
   const initials = user.username
     .split(" ")
@@ -31,11 +26,11 @@ export function Header({ user, onLogout, onNavigate}: HeaderProps) {
           Sentinel
         </Link>
         <nav className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => onNavigate("/")}>
-            Home
+          <Button variant="ghost" asChild>
+            <Link to="/">Home</Link>
           </Button>
-          <Button variant="ghost" onClick={() => onNavigate("/bans")}>
-            Bans
+          <Button variant="ghost" asChild>
+            <Link to="/bans">Bans</Link>
           </Button>
           <Button variant="ghost">Contact</Button>
           <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -45,7 +40,7 @@ export function Header({ user, onLogout, onNavigate}: HeaderProps) {
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
