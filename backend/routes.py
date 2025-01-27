@@ -26,7 +26,7 @@ def init_routes(app):
     @app.route('/config-test')
     def config_test():
         admin_emails = current_app.config['ADMIN_EMAILS']
-        api_key = os.environ.get('API_KEY_SENTINEL')
+        api_key = current_app.config['API_KEY_SENTINEL']
         google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
         google_client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
         
