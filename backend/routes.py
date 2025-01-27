@@ -21,7 +21,7 @@ def init_routes(app):
     def some_function():
         if api_key:
             return jsonify({"message": "API key is configured"})
-    return jsonify({"message": "API key is not configured"}), 500
+        return jsonify({"message": "API key is not configured"}), 500
 
     @app.route('/test')
     def test():
