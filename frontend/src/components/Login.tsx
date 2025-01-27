@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { useState, useEffect } from "react"
@@ -13,6 +14,7 @@ interface User {
 
 function Login() {
   const [user, setUser] = useState<User | null>(null)
+  const navigate = useNavigate()
 
   const fetchUserData = async () => {
     try {
@@ -52,6 +54,7 @@ function Login() {
       const data = await response.json()
       if (data.status === "success") {
         setUser(null)
+        navigate("/")
       } else {
         throw new Error(data.message)
       }

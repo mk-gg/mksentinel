@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
@@ -12,11 +12,11 @@ interface User {
 interface HeaderProps {
   user: User
   onLogout: () => void
+  onNavigate: (path: string) => void
 }
 
-export function Header({ user, onLogout }: HeaderProps) {
+export function Header({ user, onLogout, onNavigate}: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const navigate = useNavigate()
 
   const initials = user.username
     .split(" ")
@@ -31,10 +31,10 @@ export function Header({ user, onLogout }: HeaderProps) {
           Sentinel
         </Link>
         <nav className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate("/")}>
+          <Button variant="ghost" onClick={() => onNavigate("/")}>
             Home
           </Button>
-          <Button variant="ghost" onClick={() => navigate("/bans")}>
+          <Button variant="ghost" onClick={() => onNavigate("/bans")}>
             Bans
           </Button>
           <Button variant="ghost">Contact</Button>
