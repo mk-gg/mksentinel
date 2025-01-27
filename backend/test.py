@@ -120,9 +120,9 @@ def test_env():
     print(key)
 
 # data = test_auth_decorator()
-# data = get_test()
+data = get_test()
 # data = get_test_api()
 
 
-print(json.dumps(get_test(), indent=2))
+# print(json.dumps(get_test(), indent=2))
 # print(API_KEY)

@@ -19,7 +19,7 @@ def init_routes(app):
 
     @app.route('/some-endpoint')
     def some_function():
-        api_key = os.environ.get('API_KEY_SENTINEL')
+        api_key = current_app.config['SENTINEL_SECRET']
         if api_key:
             return jsonify({"message": "API key is configured"})
         return jsonify({"message": "API key is not configured"}), 500
