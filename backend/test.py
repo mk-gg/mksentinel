@@ -22,7 +22,7 @@ def test_auth_decorator():
 
 def get_test():
     # Make a GET request to the /test endpoint
-    response = requests.get(f'{WEBSITE_URL}/test')
+    response = requests.get(f'{WEBSITE_URL}/config-test')
 
     # Check the response status code
     if response.status_code == 200:
@@ -121,8 +121,8 @@ def test_env():
 
 # data = test_auth_decorator()
 # data = get_test()
-data = get_test_api()
+# data = get_test_api()
 
 
-# print(json.dumps(data, indent=2))
+print(json.dumps(get_test(), indent=2))
 # print(API_KEY)

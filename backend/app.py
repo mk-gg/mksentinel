@@ -44,7 +44,7 @@ def create_app():
         },
     }
     app.config['ADMIN_EMAILS'] = os.environ.get('ADMIN_EMAILS', '').split(',')
-
+    
     # Security configurations
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
