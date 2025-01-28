@@ -27,21 +27,25 @@ def init_routes(app):
     
     @app.route('/config-test')
     def config_test():
-        admin_emails = current_app.config['ADMIN_EMAILS']
-        sentinel_key = current_app.config['API_KEY_SENTINEL']
-        api_key = current_app.config['SENTINEL_SECRET']
-        google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
-        google_client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
-        
+        from os import environ
         return jsonify({
-            "admin_emails_configured": bool(admin_emails) and admin_emails != [''],
-            "admin_emails": admin_emails,  # Since this is just a list of emails, it's safe to expose
-            "api_key_exists": bool(api_key),
-            "sentinel_key_exists": bool(sentinel_key),
-            "google_client_id_exists": bool(google_client_id),
-            "google_client_secret_exists": bool(google_client_secret),
-            "available_config_keys": list(current_app.config.keys()),
-            "available_env_vars": list(os.environ.keys())
+            "direct_sentinel_value": environ.get('SENTINEL_SECRET'),
+            "config_sentinel_value": current_app.config.get('SENTINEL_SECRET'),
+            "env_vars_starting_with_s": [k for k in environ.keys() if k.startswith('S')],
+            "vercel_env": environ.get('VERCEL_ENV'),
+            "is_production": environ.get('VERCEL_ENV') == 'production'
+        })
+    
+    @app.route('/vercel-env-check')
+    def vercel_env_check():
+        from os import environ
+        all_keys = list(environ.keys())
+        sensitive_keys = [k for k in all_keys if 'SECRET' in k or 'KEY' in k]
+        return jsonify({
+            "has_sentinel": 'SENTINEL_SECRET' in environ,
+            "environment": environ.get('VERCEL_ENV'),
+            "sensitive_keys_present": sensitive_keys,
+            "deployment_url": environ.get('VERCEL_URL')
         })
 
     @app.route('/test')

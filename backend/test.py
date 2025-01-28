@@ -12,12 +12,12 @@ headers = {'X-API-Key': API_KEY}
 
 def test_auth_decorator():
     # Test without credentials
-    no_auth_response = requests.get(f'{WEBSITE_URL}/members')
+    no_auth_response = requests.get(f'{WEBSITE_URL}/api/members')
     print( no_auth_response.status_code == 401, "Should require authentication")
 
     # Test with API key
     api_key_headers = {'X-API-Key': API_KEY}
-    api_key_response = requests.get(f'{WEBSITE_URL}/members', headers=api_key_headers)
+    api_key_response = requests.get(f'{WEBSITE_URL}/api/members', headers=api_key_headers)
     print( api_key_response.status_code == 200, "API key should grant access")
 
 def get_test():
@@ -119,6 +119,8 @@ def test_env():
     print(env)
     print(key)
 
+
+# data = test_env()
 # data = test_auth_decorator()
 data = get_test()
 # data = some_endpoint()

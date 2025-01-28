@@ -48,6 +48,12 @@ def create_app():
     app.config['ADMIN_EMAILS'] = os.environ.get('ADMIN_EMAILS', '').split(',')
     app.config['API_KEY_SENTINEL'] = os.environ.get('API_KEY_SENTINEL')
     app.config['SENTINEL_SECRET'] = os.environ.get('SENTINEL_SECRET')
+    if not app.config['SENTINEL_SECRET']:
+        print("Warning: SENTINEL_SECRET not found in environment")
+        # Try loading from dotenv as fallback
+        from dotenv import load_dotenv
+        load_dotenv()
+        app.config['SENTINEL_SECRET'] = os.getenv('SENTINEL_SECRET')
 
     # Security configurations
     app.config['SESSION_COOKIE_SECURE'] = True
