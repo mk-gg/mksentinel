@@ -7,8 +7,7 @@
         }
     ],
     "routes": [
-        { "src": "/login", "dest": "/" },
-        { "src": "/bans", "dest": "/" },
+        { "src": "/[^.]+", "dest": "/", "status": 200 },
         {
             "src": "/(.*)",
             "dest": "vercel_app.py"
