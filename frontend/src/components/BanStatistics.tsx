@@ -6,11 +6,12 @@ import { Skeleton } from './ui/skeleton'
 interface BanStats {
     totalBans: number
     totalBansToday: number
+    monthlyTrend: number
 }
 
 
 export function BanStatistics() {
-    const [stats, setStats] = useState<BanStats>({ totalBans: 0, totalBansToday: 0 })
+    const [stats, setStats] = useState<BanStats>({ totalBans: 0, totalBansToday: 0, monthlyTrend: 0 })
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -71,10 +72,10 @@ export function BanStatistics() {
             </Card>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Placeholder</CardTitle>
+                    <CardTitle className="text-sm font-medium">Monthly Trend</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">-</div>
+                    <div className="text-2xl font-bold">{stats.monthlyTrend}</div>
                 </CardContent>
             </Card>
         </div>
