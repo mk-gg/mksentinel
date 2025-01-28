@@ -31,8 +31,6 @@ def create_app():
 
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'top secret!')
-    app.config['API_KEY_SENTINEL'] = os.environ.get('API_KEY_SENTINEL')
-    app.config['SENTINEL_SECRET'] = os.environ.get('SENTINEL_SECRET')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres.cpeyxarnnshkhhjfffsp:VOoLSxZeDkFRymUs@aws-0-us-west-1.pooler.supabase.com:6543/postgres')
     app.config['OAUTH2_PROVIDERS'] = {
         'google': {
@@ -48,6 +46,8 @@ def create_app():
         },
     }
     app.config['ADMIN_EMAILS'] = os.environ.get('ADMIN_EMAILS', '').split(',')
+    app.config['API_KEY_SENTINEL'] = os.environ.get('API_KEY_SENTINEL')
+    app.config['SENTINEL_SECRET'] = os.environ.get('SENTINEL_SECRET')
 
     # Security configurations
     app.config['SESSION_COOKIE_SECURE'] = True
