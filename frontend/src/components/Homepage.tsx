@@ -12,7 +12,7 @@ export function HomePage() {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-grow container mx-auto px-8 py-8 max-w-7xl">
+        <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">
           <Skeleton className="h-8 w-[300px] mb-4" />
           <Skeleton className="h-4 w-[500px] mb-8" />
           <div className="space-y-8">

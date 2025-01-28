@@ -158,7 +158,8 @@ def init_routes(app):
         members = Member.query.all()
         result = [member.to_json() for member in members]
         return jsonify(result)
-
+    
+    # For getting the ban by id
     @app.route('/api/ban/<int:ban_id>', methods=['GET'])
     @auth_required
     def get_ban(ban_id):
@@ -240,7 +241,7 @@ def init_routes(app):
             return jsonify({'error': str(e)}), 400
 
 
-    @app.route('/ban/<int:ban_id>', methods=['PUT'])
+    @app.route('/api/ban/<int:ban_id>', methods=['PUT'])
     @admin_required
     def update_ban(ban_id):
         try:
