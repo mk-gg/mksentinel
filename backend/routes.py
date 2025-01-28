@@ -15,6 +15,8 @@ from models import db, User, Member, Server, Bans
 
 def init_routes(app):
     @app.route('/')
+    @app.route('/bans')
+    @app.route('/login')
     def index():
         return send_from_directory(app.static_folder, "index.html")
 
