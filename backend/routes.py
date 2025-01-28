@@ -18,14 +18,9 @@ def init_routes(app):
     def index():
         return send_from_directory(app.static_folder, "index.html")
 
-    @app.route('/some-endpoint')
-    def some_function():
-        api_key = current_app.config['SENTINEL_SECRET']
-        if api_key:
-            return jsonify({"message": "API key is configured"})
-        return jsonify({"message": "API key is not configured"}), 500
     
     @app.route('/config-test')
+    @admin_required
     def config_test():
         from os import environ
         return jsonify({
@@ -37,6 +32,7 @@ def init_routes(app):
         })
     
     @app.route('/vercel-env-check')
+    @admin_required
     def vercel_env_check():
         from os import environ
         all_keys = list(environ.keys())
@@ -290,6 +286,7 @@ def init_routes(app):
             return jsonify({'error': str(e)}), 400
         
     @app.route('/api/server/<int:server_id>/banned-members', methods=['GET'])
+    @auth_required
     def get_banned_members(server_id):
         try:
             banned_members = db.session.query(Member, Bans)\
@@ -374,3 +371,10 @@ def init_routes(app):
             
         except Exception as e:
             return jsonify({'error': str(e)}), 400
+    
+
+    # Handles the routes for static files
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+        return send_from_directory(app.static_folder, "index.html")

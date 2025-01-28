@@ -6,7 +6,7 @@ import os
 load_dotenv(verbose=True)
 
 # Define the API endpoint
-WEBSITE_URL = "https://mksentinel-backend.vercel.app"
+WEBSITE_URL = "https://mksentinel.vercel.app"
 API_KEY = os.environ.get('SENTINEL_SECRET')
 headers = {'X-API-Key': API_KEY}
 
