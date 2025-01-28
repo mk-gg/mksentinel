@@ -49,7 +49,6 @@ export function Header() {
           <Button variant="ghost" asChild>
             <Link to="/bans">Bans</Link>
           </Button>
-          <Button variant="ghost">Contact</Button>
           <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
