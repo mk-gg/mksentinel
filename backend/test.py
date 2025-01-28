@@ -7,7 +7,7 @@ load_dotenv(verbose=True)
 
 # Define the API endpoint
 WEBSITE_URL = "https://mksentinel-backend.vercel.app"
-API_KEY = os.environ.get('API_KEY_SENTINEL')
+API_KEY = os.environ.get('SENTINEL_SECRET')
 headers = {'X-API-Key': API_KEY}
 
 def test_auth_decorator():

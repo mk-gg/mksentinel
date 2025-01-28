@@ -6,7 +6,7 @@ from flask_login import current_user
 def verify_api_key():
     """Check if the provided API key is valid."""
     api_key = request.headers.get('X-API-Key')
-    return api_key == os.environ.get('API_KEY_SENTINEL')
+    return api_key == os.environ.get('SENTINEL_SECRET')
 
 def auth_required(f):
     @wraps(f)
