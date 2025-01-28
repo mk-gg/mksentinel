@@ -377,7 +377,10 @@ def init_routes(app):
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def catch_all(path):
-        if path != "" and os.path.exists(app.static_folder + '/' + path):
-            return send_from_directory(app.static_folder, path)
-        else:
+           # First check if this is one of our API endpoints
+        try:
+            # Try to dispatch to the matching route handler
+            return app.dispatch_request()
+        except:
+            # If no matching route is found, serve the React app
             return send_from_directory(app.static_folder, 'index.html')
