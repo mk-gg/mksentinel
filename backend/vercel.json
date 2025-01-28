@@ -7,15 +7,12 @@
         }
     ],
     "routes": [
+        { "src": "/login", "dest": "/" },
+        { "src": "/bans", "dest": "/" },
         {
             "src": "/(.*)",
             "dest": "vercel_app.py"
         }
-    ],
-    "rewrites": [
-    {
-      "source": "/((?!api/.*).*)",
-      "destination": "/static/index.html"
-    }
-  ]
+    ]
+    
 }
