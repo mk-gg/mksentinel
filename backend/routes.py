@@ -14,13 +14,8 @@ from models import db, User, Member, Server, Bans
 
 
 def init_routes(app):
-
-    # @app.route('/')
-    # def index():
-    #     return send_from_directory(app.static_folder, "index.html")
-
     @app.route('/')
-    def serve_index():
+    def index():
         return send_from_directory(app.static_folder, "index.html")
 
     
@@ -74,7 +69,7 @@ def init_routes(app):
     @app.route('/authorize/<provider>')
     def oauth2_authorize(provider):
         if not current_user.is_anonymous:
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
@@ -98,7 +93,7 @@ def init_routes(app):
     @app.route('/callback/<provider>')
     def oauth2_callback(provider):
         if not current_user.is_anonymous:
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
@@ -109,7 +104,7 @@ def init_routes(app):
             for k, v in request.args.items():
                 if k.startswith('error'):
                     flash(f'{k}: {v}')
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
 
         # make sure that the state parameter matches the one we created in the
         # authorization request
@@ -152,7 +147,7 @@ def init_routes(app):
 
         # log the user in
         login_user(user)
-        return redirect(url_for('/'))
+        return redirect(url_for('index'))
     
     # For getting the members
     @app.route('/api/members', methods=['GET'])
@@ -379,12 +374,13 @@ def init_routes(app):
     
 
     # Handles the routes for static files
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
-    def catch_all(path):
-           # First check if this is one of our API endpoints
-        if path and path != 'index.html' and os.path.exists(os.path.join(app.static_folder, path)):
-            return send_from_directory(app.static_folder, path)
-        
-        # For everything else, serve the React app
-        return send_from_directory(app.static_folder, 'index.html')
+    # @app.route('/', defaults={'path': ''})
+    # @app.route('/<path:path>')
+    # def catch_all(path):
+    #        # First check if this is one of our API endpoints
+    #     try:
+    #         # Try to dispatch to the matching route handler
+    #         return app.dispatch_request()
+    #     except:
+    #         # If no matching route is found, serve the React app
+    #         return send_from_directory(app.static_folder, 'index.html')
