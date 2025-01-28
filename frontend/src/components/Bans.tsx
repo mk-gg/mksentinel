@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Label } from "./ui/label"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
+import { Skeleton } from "./ui/skeleton"
 
 interface Ban {
   banId: number
@@ -140,7 +141,25 @@ export function Bans() {
   }
 
   if (loading) {
-    return <div>Loading bans...</div>
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+          <Card className="w-full">
+            <CardHeader>
+              <Skeleton className="h-8 w-[200px] mb-2" />
+              <Skeleton className="h-4 w-[300px]" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <Skeleton className="h-10 w-[200px]" />
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    )
   }
 
   if (error) {
