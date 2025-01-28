@@ -63,7 +63,7 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     login = LoginManager(app)
-    login.login_view = 'index'
+    login.login_view = '/'
 
     # Import User model for user loader
     from models import User

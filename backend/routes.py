@@ -19,6 +19,10 @@ def init_routes(app):
     # def index():
     #     return send_from_directory(app.static_folder, "index.html")
 
+    @app.route('/')
+    def serve_index():
+        return send_from_directory(app.static_folder, "index.html")
+
     
     @app.route('/config-test')
     @admin_required
@@ -70,7 +74,7 @@ def init_routes(app):
     @app.route('/authorize/<provider>')
     def oauth2_authorize(provider):
         if not current_user.is_anonymous:
-            return redirect(url_for('index'))
+            return redirect(url_for('/'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
@@ -94,7 +98,7 @@ def init_routes(app):
     @app.route('/callback/<provider>')
     def oauth2_callback(provider):
         if not current_user.is_anonymous:
-            return redirect(url_for('index'))
+            return redirect(url_for('/'))
 
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
@@ -105,7 +109,7 @@ def init_routes(app):
             for k, v in request.args.items():
                 if k.startswith('error'):
                     flash(f'{k}: {v}')
-            return redirect(url_for('index'))
+            return redirect(url_for('/'))
 
         # make sure that the state parameter matches the one we created in the
         # authorization request
@@ -148,7 +152,7 @@ def init_routes(app):
 
         # log the user in
         login_user(user)
-        return redirect(url_for('index'))
+        return redirect(url_for('/'))
     
     # For getting the members
     @app.route('/api/members', methods=['GET'])
