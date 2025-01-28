@@ -8,8 +8,16 @@
     ],
     "routes": [
         {
-            "src": "/(.*)",
+            "src": "/api/(.*)",
             "dest": "vercel_app.py"
+        },
+        {
+            "src": "/static/(.*)",
+            "dest": "vercel_app.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
         }
     ]
 }
