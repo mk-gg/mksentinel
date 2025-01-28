@@ -14,9 +14,10 @@ from models import db, User, Member, Server, Bans
 
 
 def init_routes(app):
-    @app.route('/')
-    def index():
-        return send_from_directory(app.static_folder, "index.html")
+
+    # @app.route('/')
+    # def index():
+    #     return send_from_directory(app.static_folder, "index.html")
 
     
     @app.route('/config-test')
@@ -378,9 +379,8 @@ def init_routes(app):
     @app.route('/<path:path>')
     def catch_all(path):
            # First check if this is one of our API endpoints
-        try:
-            # Try to dispatch to the matching route handler
-            return app.dispatch_request()
-        except:
-            # If no matching route is found, serve the React app
-            return send_from_directory(app.static_folder, 'index.html')
+        if path and path != 'index.html' and os.path.exists(os.path.join(app.static_folder, path)):
+            return send_from_directory(app.static_folder, path)
+        
+        # For everything else, serve the React app
+        return send_from_directory(app.static_folder, 'index.html')
