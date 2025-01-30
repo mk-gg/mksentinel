@@ -5,44 +5,59 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
 
-interface MonthlyTrend {
-  month: string
-  count: number
+interface Ban {
+  banId: number
+  createdAt: string
+  memberId: string
+  reason: string
+  serverId: number
 }
 
-interface BanStatistics {
-  totalBans: number
-  totalBansToday: number
-  totalBansMonth: number
-  totalBansYear: number
-  totalServers: number
-  totalMembers: number
-  monthlyTrend: MonthlyTrend[]
+interface ChartData {
+  date: string
+  count: number
 }
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
-  return date.toLocaleString("default", { month: "short", year: "numeric" })
+  return `${date.getDate()}/${date.getMonth() + 1}`
 }
 
 export const BanChart = () => {
-  const [statistics, setStatistics] = useState<BanStatistics | null>(null)
+  const [chartData, setChartData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/bans/statistics`, {
+        const response = await fetch(`${BASE_URL}/api/bans`, {
           credentials: "include",
         })
         if (!response.ok) {
-          throw new Error("Failed to fetch ban statistics")
+          throw new Error("Failed to fetch ban data")
         }
-        const data: BanStatistics = await response.json()
-        setStatistics(data)
+        const data = await response.json()
+        const bans: Ban[] = data.bans
+
+        const banCounts: { [key: string]: number } = {}
+        bans.forEach((ban) => {
+          const date = formatDate(ban.createdAt)
+          banCounts[date] = (banCounts[date] || 0) + 1
+        })
+
+        const formattedData: ChartData[] = Object.entries(banCounts)
+          .map(([date, count]) => ({
+            date,
+            count,
+            originalDate: new Date(date.split("/").reverse().join("-")),
+          }))
+          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
+          .map(({ date, count }) => ({ date, count }))
+
+        setChartData(formattedData)
       } catch (err) {
-        setError("Failed to load ban statistics")
+        setError("Failed to load ban data")
       } finally {
         setLoading(false)
       }
@@ -65,24 +80,19 @@ export const BanChart = () => {
     )
   }
 
-  if (error || !statistics) {
+  if (error) {
     return (
       <Card className="w-full h-[300px] flex items-center justify-center">
-        <CardContent>{error || "No data available"}</CardContent>
+        <CardContent>{error}</CardContent>
       </Card>
     )
   }
 
-  const chartData = statistics.monthlyTrend.map((item) => ({
-    ...item,
-    month: formatDate(item.month),
-  }))
-
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Monthly Ban Trend</CardTitle>
-        <CardDescription>Number of bans issued each month</CardDescription>
+        <CardTitle>Bans per Day</CardTitle>
+        <CardDescription>Number of bans issued each day</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -96,12 +106,13 @@ export const BanChart = () => {
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
-              <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => Math.round(value).toString()}
+                interval={1}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={50} />
