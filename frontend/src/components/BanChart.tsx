@@ -5,6 +5,8 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
 
+import { parseISO, format } from "date-fns"
+
 interface Ban {
   banId: number
   createdAt: string
@@ -18,10 +20,10 @@ interface ChartData {
   count: number
 }
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return `${date.getDate()}/${date.getMonth() + 1}`
-}
+// const formatDate = (dateString: string) => {
+//   const date = new Date(dateString)
+//   return `${date.getDate()}/${date.getMonth() + 1}`
+// }
 
 export const BanChart = () => {
   const [chartData, setChartData] = useState<ChartData[]>([])
@@ -42,7 +44,8 @@ export const BanChart = () => {
 
         const banCounts: { [key: string]: number } = {}
         bans.forEach((ban) => {
-          const date = formatDate(ban.createdAt)
+          // const date = formatDate(ban.createdAt)
+          const date = format(parseISO(ban.createdAt), "yyyy-MM-dd")
           banCounts[date] = (banCounts[date] || 0) + 1
         })
 
@@ -54,6 +57,8 @@ export const BanChart = () => {
           }))
           .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
           .map(({ date, count }) => ({ date, count }))
+
+        formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
         setChartData(formattedData)
       } catch (err) {
@@ -111,7 +116,7 @@ export const BanChart = () => {
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value) => Math.round(value).toString()}
+                tickFormatter={(value) => format(parseISO(value), "MMM dd")}
                 interval={1}
               />
               <ChartTooltip content={<ChartTooltipContent />} />

@@ -75,7 +75,8 @@ def get_members():
     try:
     
         response = requests.get(
-            f'{WEBSITE_URL}/api/bans/statistics'
+            f'{WEBSITE_URL}/api/bans/statistics',
+            headers=headers,
         )
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
@@ -134,14 +135,15 @@ def test_env():
 
 
 # data = test_env()
-data = test_auth_decorator()
+# data = test_auth_decorator()
 # data = get_test()
 # data = get_test2()
 # data = some_endpoint()
 # data = get_test_api()
-# data = get_members()
+data = get_members()
 
 
 
-# print(json.dumps(get_test(), indent=2))
+
+print(json.dumps(data, indent=2))
 # print(API_KEY)
