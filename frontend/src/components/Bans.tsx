@@ -12,6 +12,7 @@ import { Label } from "./ui/label"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Skeleton } from "./ui/skeleton"
+import { compareDesc } from "date-fns"
 
 interface Ban {
   banId: number
@@ -69,6 +70,7 @@ export function Bans() {
       ban.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ban.memberId.includes(searchTerm)
   )
+  .sort((a, b) => compareDesc(new Date(a.createdAt), new Date(b.createdAt)))
 
   const handleEdit = useCallback(
     async (banId: number) => {
@@ -165,7 +167,7 @@ export function Bans() {
   if (error) {
     return <div>{error}</div>
   }
-
+  
 
   return (
     <>
