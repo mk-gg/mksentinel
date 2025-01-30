@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
-import { BASE_URL } from '@/config/api'
+import { BASE_URL } from "@/config/api"
 
 interface Ban {
   banId: number
@@ -32,28 +32,32 @@ export const BanChart = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/bans`, {
-          credentials: 'include'
+          credentials: "include",
         })
         if (!response.ok) {
-          throw new Error('Failed to fetch ban data')
+          throw new Error("Failed to fetch ban data")
         }
         const data = await response.json()
         const bans: Ban[] = data.bans
 
         const banCounts: { [key: string]: number } = {}
-        bans.forEach(ban => {
+        bans.forEach((ban) => {
           const date = formatDate(ban.createdAt)
           banCounts[date] = (banCounts[date] || 0) + 1
         })
 
-        const formattedData: ChartData[] = Object.entries(banCounts).map(([date, count]) => ({
-          date,
-          count
-        }))
+        const formattedData: ChartData[] = Object.entries(banCounts)
+          .map(([date, count]) => ({
+            date,
+            count,
+            originalDate: new Date(date.split("/").reverse().join("-")),
+          }))
+          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
+          .map(({ date, count }) => ({ date, count }))
 
         setChartData(formattedData)
       } catch (err) {
-        setError('Failed to load ban data')
+        setError("Failed to load ban data")
       } finally {
         setLoading(false)
       }
@@ -77,7 +81,11 @@ export const BanChart = () => {
   }
 
   if (error) {
-    return <Card className="w-full h-[300px] flex items-center justify-center"><CardContent>{error}</CardContent></Card>
+    return (
+      <Card className="w-full h-[300px] flex items-center justify-center">
+        <CardContent>{error}</CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -98,13 +106,8 @@ export const BanChart = () => {
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
-              <XAxis 
-                dataKey="date" 
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis 
+              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+              <YAxis
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
@@ -112,12 +115,7 @@ export const BanChart = () => {
                 interval={1}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar 
-                dataKey="count" 
-                fill="hsl(var(--primary))" 
-                radius={[4, 4, 0, 0]}
-                maxBarSize={50}
-              />
+              <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={50} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -125,5 +123,4 @@ export const BanChart = () => {
     </Card>
   )
 }
-
 

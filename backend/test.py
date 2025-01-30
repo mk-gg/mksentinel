@@ -88,7 +88,7 @@ def add_ban(member_data=member_data):
     try:
 
         response = requests.post(
-            'https://mksentinel-backend.vercel.app/ban',
+            'https://mksentinel.vercel.app/ban',
             headers=headers,
             json=member_data
         )
@@ -134,9 +134,9 @@ def test_env():
 
 
 # data = test_env()
-# data = test_auth_decorator()
-data = get_test()
-data = get_test2()
+data = test_auth_decorator()
+# data = get_test()
+# data = get_test2()
 # data = some_endpoint()
 # data = get_test_api()
 # data = get_members()
