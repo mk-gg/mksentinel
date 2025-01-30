@@ -5,64 +5,44 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
 
-import { parseISO, format } from "date-fns"
-
-interface Ban {
-  banId: number
-  createdAt: string
-  memberId: string
-  reason: string
-  serverId: number
-}
-
-interface ChartData {
-  date: string
+interface MonthlyTrend {
+  month: string
   count: number
 }
 
-// const formatDate = (dateString: string) => {
-//   const date = new Date(dateString)
-//   return `${date.getDate()}/${date.getMonth() + 1}`
-// }
+interface BanStatistics {
+  totalBans: number
+  totalBansToday: number
+  totalBansMonth: number
+  totalBansYear: number
+  totalServers: number
+  totalMembers: number
+  monthlyTrend: MonthlyTrend[]
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleString("default", { month: "short", year: "numeric" })
+}
 
 export const BanChart = () => {
-  const [chartData, setChartData] = useState<ChartData[]>([])
+  const [statistics, setStatistics] = useState<BanStatistics | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/bans`, {
+        const response = await fetch(`${BASE_URL}/api/bans/statistics`, {
           credentials: "include",
         })
         if (!response.ok) {
-          throw new Error("Failed to fetch ban data")
+          throw new Error("Failed to fetch ban statistics")
         }
-        const data = await response.json()
-        const bans: Ban[] = data.bans
-
-        const banCounts: { [key: string]: number } = {}
-        bans.forEach((ban) => {
-          // const date = formatDate(ban.createdAt)
-          const date = format(parseISO(ban.createdAt), "yyyy-MM-dd")
-          banCounts[date] = (banCounts[date] || 0) + 1
-        })
-
-        const formattedData: ChartData[] = Object.entries(banCounts)
-          .map(([date, count]) => ({
-            date,
-            count,
-            originalDate: new Date(date.split("/").reverse().join("-")),
-          }))
-          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-          .map(({ date, count }) => ({ date, count }))
-
-        formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-        setChartData(formattedData)
+        const data: BanStatistics = await response.json()
+        setStatistics(data)
       } catch (err) {
-        setError("Failed to load ban data")
+        setError("Failed to load ban statistics")
       } finally {
         setLoading(false)
       }
@@ -85,19 +65,24 @@ export const BanChart = () => {
     )
   }
 
-  if (error) {
+  if (error || !statistics) {
     return (
       <Card className="w-full h-[300px] flex items-center justify-center">
-        <CardContent>{error}</CardContent>
+        <CardContent>{error || "No data available"}</CardContent>
       </Card>
     )
   }
 
+  const chartData = statistics.monthlyTrend.map((item) => ({
+    ...item,
+    month: formatDate(item.month),
+  }))
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Bans per Day</CardTitle>
-        <CardDescription>Number of bans issued each day</CardDescription>
+        <CardTitle>Monthly Ban Trend</CardTitle>
+        <CardDescription>Number of bans issued each month</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -111,13 +96,12 @@ export const BanChart = () => {
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+              <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value) => format(parseISO(value), "MMM dd")}
-                interval={1}
+                tickFormatter={(value) => Math.round(value).toString()}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={50} />
