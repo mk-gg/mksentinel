@@ -4,6 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
+import { format, parseISO } from "date-fns"
 
 interface Ban {
   banId: number
@@ -16,11 +17,6 @@ interface Ban {
 interface ChartData {
   date: string
   count: number
-}
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return `${date.getDate()}/${date.getMonth() + 1}`
 }
 
 export const BanChart = () => {
@@ -40,23 +36,30 @@ export const BanChart = () => {
         const data = await response.json()
         const bans: Ban[] = data.bans
 
-        const banCounts: { [key: string]: number } = {}
+        // Create a map to store ban counts by date
+        const banCountsByDate = new Map<string, number>()
+
+        // Process each ban and count by formatted date
         bans.forEach((ban) => {
-          const date = formatDate(ban.createdAt)
-          banCounts[date] = (banCounts[date] || 0) + 1
+          // Parse the ISO string and format it consistently
+          const date = format(parseISO(ban.createdAt), 'dd/MM/yyyy')
+          banCountsByDate.set(date, (banCountsByDate.get(date) || 0) + 1)
         })
 
-        const formattedData: ChartData[] = Object.entries(banCounts)
+        // Convert the map to array and sort by date
+        const formattedData: ChartData[] = Array.from(banCountsByDate.entries())
           .map(([date, count]) => ({
-            date,
+            date: format(parseISO(date.split('/').reverse().join('-')), 'dd/MM'),
             count,
-            originalDate: new Date(date.split("/").reverse().join("-")),
+            // Keep original date for sorting
+            originalDate: parseISO(date.split('/').reverse().join('-'))
           }))
-          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
+          .sort((a, b) => (a.originalDate as Date).getTime() - (b.originalDate as Date).getTime())
           .map(({ date, count }) => ({ date, count }))
 
         setChartData(formattedData)
       } catch (err) {
+        console.error('Error fetching ban data:', err)
         setError("Failed to load ban data")
       } finally {
         setLoading(false)
@@ -106,16 +109,26 @@ export const BanChart = () => {
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+              <XAxis 
+                dataKey="date" 
+                tickLine={false} 
+                axisLine={false} 
+                tick={{ fontSize: 12 }}
+              />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => Math.round(value).toString()}
-                interval={1}
+                interval={0}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={50} />
+              <Bar 
+                dataKey="count" 
+                fill="hsl(var(--primary))" 
+                radius={[4, 4, 0, 0]} 
+                maxBarSize={50} 
+              />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
