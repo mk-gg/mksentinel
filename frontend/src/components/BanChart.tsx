@@ -4,7 +4,8 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
-import { format } from "date-fns"
+import { parseISO } from "date-fns"
+import { formatInTimeZone } from "date-fns-tz"
 
 interface Ban {
   banId: number
@@ -39,7 +40,7 @@ export const BanChart = () => {
         // Create a map to store ban counts by date
         const banCountsByDate = new Map<string, number>()
 
-        // Process each ban and count by formatted date
+        // Process each ban and count by formatted date in UTC
         bans.forEach((ban) => {
           try {
             if (!ban.createdAt) {
@@ -47,8 +48,10 @@ export const BanChart = () => {
               return
             }
             
-            const parsedDate = new Date(ban.createdAt)
-            const formattedDate = format(parsedDate, 'dd/MM/yyyy')
+            // Parse the ISO date string
+            const parsedDate = parseISO(ban.createdAt)
+            // Format in UTC
+            const formattedDate = formatInTimeZone(parsedDate, 'UTC', 'dd/MM/yyyy')
             
             banCountsByDate.set(formattedDate, (banCountsByDate.get(formattedDate) || 0) + 1)
           } catch (err) {
@@ -63,7 +66,7 @@ export const BanChart = () => {
               return {
                 date: date.slice(0, 5), // Just take dd/MM part
                 count,
-                originalDate: new Date(date.split('/').reverse().join('-'))
+                originalDate: parseISO(date.split('/').reverse().join('-'))
               }
             } catch (err) {
               console.error("Error formatting date:", date, err)
@@ -111,8 +114,8 @@ export const BanChart = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Bans per Day</CardTitle>
-        <CardDescription>Number of bans issued each day</CardDescription>
+        <CardTitle>Bans per Day (UTC)</CardTitle>
+        <CardDescription>Number of bans issued each day in UTC timezone</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -153,4 +156,3 @@ export const BanChart = () => {
     </Card>
   )
 }
-

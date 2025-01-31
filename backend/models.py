@@ -43,14 +43,15 @@ class Bans(db.Model):
     server_id = db.Column(db.String(20), db.ForeignKey('server.server_id'), nullable=False)
     reason = db.Column(db.String(200), nullable=True)
     captured_message = db.Column(db.String(500), nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
 
     def to_json(self):
         return {
-            'banId' : self.ban_id,
+            'banId': self.ban_id,
             'memberId': self.member_id,
             'serverId': self.server_id,
             'reason': self.reason,
             'capturedMessage': self.captured_message,
-            'createdAt': self.created_at
+            'createdAt': self.created_at.isoformat() if self.created_at else None
+            
         }

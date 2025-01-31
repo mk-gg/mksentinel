@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import secrets
 from psycopg2 import IntegrityError
@@ -313,10 +313,10 @@ def init_routes(app):
     @auth_required
     def get_ban_statistics():
         try:
-            # Get current date
-            current_date = datetime.utcnow()
+            # Get current date in UTC
+            current_date = datetime.now(timezone.utc)
             
-            # Calculate the start of today, this month, and this year
+            # Calculate the start of today, this month, and this year in UTC
             start_of_today = current_date.replace(hour=0, minute=0, second=0, microsecond=0)
             start_of_month = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             start_of_year = current_date.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -324,18 +324,18 @@ def init_routes(app):
             # Get total bans
             total_bans = db.session.query(func.count(Bans.ban_id)).scalar()
             
-            # Get total bans today
+            # Get total bans today using UTC comparison
             total_bans_today = db.session.query(func.count(Bans.ban_id))\
                 .filter(Bans.created_at >= start_of_today).scalar()
-                
+                    
             # Get total bans this month
             total_bans_month = db.session.query(func.count(Bans.ban_id))\
                 .filter(Bans.created_at >= start_of_month).scalar()
-                
+                    
             # Get total bans this year
             total_bans_year = db.session.query(func.count(Bans.ban_id))\
                 .filter(Bans.created_at >= start_of_year).scalar()
-                
+                    
             # Get total unique servers with bans
             total_servers = db.session.query(func.count(func.distinct(Bans.server_id))).scalar()
             
@@ -353,10 +353,10 @@ def init_routes(app):
                 'month'
             ).order_by('month').all()
             
-            # Format monthly trend data
+            # Format monthly trend data with UTC dates
             monthly_trend_data = [
                 {
-                    'month': month.strftime('%Y-%m'),
+                    'month': month.astimezone(timezone.utc).strftime('%Y-%m'),
                     'count': count
                 }
                 for month, count in monthly_trend
@@ -369,9 +369,10 @@ def init_routes(app):
                 'totalBansYear': total_bans_year,
                 'totalServers': total_servers,
                 'totalMembers': total_members,
-                'monthlyTrend': monthly_trend_data
+                'monthlyTrend': monthly_trend_data,
+                'currentServerTime': current_date.isoformat()
             }), 200
-            
+                
         except Exception as e:
             return jsonify({'error': str(e)}), 400
     
