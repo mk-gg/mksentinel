@@ -36,26 +36,49 @@ export const BanChart = () => {
         const data = await response.json()
         const bans: Ban[] = data.bans
 
+        console.log("Raw bans data:", bans) // Debug log
+
         // Create a map to store ban counts by date
         const banCountsByDate = new Map<string, number>()
 
         // Process each ban and count by formatted date
         bans.forEach((ban) => {
-          // Parse the ISO string and format it consistently
-          const date = format(parseISO(ban.createdAt), 'dd/MM/yyyy')
-          banCountsByDate.set(date, (banCountsByDate.get(date) || 0) + 1)
+          try {
+            if (!ban.createdAt) {
+              console.warn("Ban missing createdAt:", ban)
+              return
+            }
+            
+            const parsedDate = parseISO(ban.createdAt)
+            const formattedDate = format(parsedDate, 'dd/MM/yyyy')
+            
+            banCountsByDate.set(formattedDate, (banCountsByDate.get(formattedDate) || 0) + 1)
+          } catch (err) {
+            console.error("Error processing ban date:", ban.createdAt, err)
+          }
         })
+
+        console.log("Processed ban counts:", Array.from(banCountsByDate)) // Debug log
 
         // Convert the map to array and sort by date
         const formattedData: ChartData[] = Array.from(banCountsByDate.entries())
-          .map(([date, count]) => ({
-            date: format(parseISO(date.split('/').reverse().join('-')), 'dd/MM'),
-            count,
-            // Keep original date for sorting
-            originalDate: parseISO(date.split('/').reverse().join('-'))
-          }))
-          .sort((a, b) => (a.originalDate as Date).getTime() - (b.originalDate as Date).getTime())
+          .map(([date, count]) => {
+            try {
+              return {
+                date: date.slice(0, 5), // Just take dd/MM part
+                count,
+                originalDate: new Date(date.split('/').reverse().join('-'))
+              }
+            } catch (err) {
+              console.error("Error formatting date:", date, err)
+              return null
+            }
+          })
+          .filter((item): item is NonNullable<typeof item> => item !== null)
+          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
           .map(({ date, count }) => ({ date, count }))
+
+        console.log("Final chart data:", formattedData) // Debug log
 
         setChartData(formattedData)
       } catch (err) {
