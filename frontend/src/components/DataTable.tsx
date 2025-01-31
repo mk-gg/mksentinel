@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { parseISO } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -51,6 +53,16 @@ export function DataTable({ bans, onEdit, onDelete, isAdmin }: DataTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
+  const formatDate = (dateString: string) => {
+    try {
+      const parsedDate = parseISO(dateString)
+      return formatInTimeZone(parsedDate, 'UTC', 'dd/MM/yyyy HH:mm:ss')
+    } catch (error) {
+      console.error('Error formatting date:', error)
+      return dateString
+    }
+  }
+
   const totalPages = Math.ceil(bans.length / rowsPerPage)
   const paginatedBans = bans.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
 
@@ -79,7 +91,7 @@ export function DataTable({ bans, onEdit, onDelete, isAdmin }: DataTableProps) {
         <TableBody>
           {paginatedBans.map((ban) => (
             <TableRow key={ban.banId}>
-              <TableCell>{new Date(ban.createdAt).toLocaleString()}</TableCell>
+              <TableCell>{formatDate(ban.createdAt)}</TableCell>
               <TableCell>{ban.reason}</TableCell>
               <TableCell className="max-w-xs truncate">{ban.capturedMessage}</TableCell>
               <TableCell>{ban.memberId}</TableCell>
@@ -106,7 +118,7 @@ export function DataTable({ bans, onEdit, onDelete, isAdmin }: DataTableProps) {
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
                               <div>
-                                <p><strong>Date:</strong> {new Date(ban.createdAt).toLocaleString()}</p>
+                                <p><strong>Date:</strong> {formatDate(ban.createdAt)}</p>
                                 <p><strong>Reason:</strong> {ban.reason}</p>
                                 <p><strong>Captured Message:</strong> {ban.capturedMessage}</p>
                                 <p><strong>Member ID:</strong> {ban.memberId}</p>
@@ -216,4 +228,3 @@ export function DataTable({ bans, onEdit, onDelete, isAdmin }: DataTableProps) {
     </>
   )
 }
-
