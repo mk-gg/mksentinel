@@ -114,8 +114,8 @@ export const BanChart = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Bans per Day (UTC)</CardTitle>
-        <CardDescription>Number of bans issued each day in UTC timezone</CardDescription>
+        <CardTitle>Bans per Day</CardTitle>
+        <CardDescription>Number of bans issued each day</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
