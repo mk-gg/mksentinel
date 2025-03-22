@@ -75,7 +75,7 @@ def get_members():
     try:
     
         response = requests.get(
-            f'{WEBSITE_URL}/api/bans/statistics',
+            f'{WEBSITE_URL}/api/bans',
             headers=headers,
         )
         response.raise_for_status()  # Raises an HTTPError for bad responses

@@ -1,0 +1,625 @@
+{
+    "messages": [
+        {
+            "text": "just found out i missed out on a 48k gain on FLOKI thanks to this great tool from uniswap 👀 https://uniswap-auditors.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "fomo", "unrealized_gains"]
+        },
+        {
+            "text": "i just found out i missed out on a 48k gain on FLOKI thanks to this great tool from uniswap 👀 https://uniswap-auditors.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "fomo", "unrealized_gains"]
+        },
+        {
+            "text": "i just found out i missed out on 48k in profits on $FLOKI, wish I knew about this earlier\nhttps:///@uniswap-validated.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-03-20",
+            "flags": ["crypto", "fomo", "unrealized_gains"]
+        },
+        {
+            "text": "uniswap made a great tool including a leaderboard for unrealized gainers 🤣 i'm ranked 483 missed a lot on FLOKI https://uniswap-audits.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "leaderboard", "unrealized_gains"]
+        },
+        {
+            "text": "i just found out i missed out on 48k in profits on $FLOKI, wish I knew about this earlier\nhttps:///@uniswap-reviewers.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "leaderboard", "unrealized_gains"]
+        },
+        {
+            "text": "i just found out i missed out on 48k in profits on $FLOKI, wish I knew about this earlier https:///@uniswap-reviewers.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "leaderboard", "unrealized_gains"]
+        },
+        {
+            "text": "Check all your trades and unrealized profits in Crypto, Forex or NFT on: uniswap-analyzer.web.app/ I lost around 15k on NFTs and missed 37k on Tokens😔",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags": ["crypto", "nft", "forex", "loss_bait"]
+        },
+        {
+            "text": "We’ve partnered with OpenSea for a new free  Mint! Users in this server are invited to join. 🚀 @everyone @here You have a chance to be selected, so make sure to participate and [MINT](https://opensea-nft-three.vercel.app/) as soon as possible. Some claims may require gas!",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "Minting has officially Begun Early 🏆🏆 We have formally decided as a team to allow individual to mint today (https://nft-giftbox29nine.vercel.app/) 🚀🎊 Instead of doing whitelists we decides to give people who are online during this time the ability to mint 🎁",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "We have collaborated with OPENSEA on a new free mint. Users in this server can participate. 🚀 @everyone @here You can be selected, please participate in [MINT](https://mint-openseanft9x.vercel.app/) as soon as possible. some mint might require gas!",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "We are looking for workers in our project! Here are some roles you might find interesting: Beta Testers: Test new features and find bugs. ($29-35 per hour). Moderators: Maintain order and create a welcoming environment. ($25-45 per hour) Community Moderators: Interact with our community and keep the servers active. ($23-35 d/h) Developers: Develop and implement new features. (negotiable) If you are interested, dm me",
+            "category": "crypto_job_posting",
+            "first_seen": "2024-02-14",
+            "flags": ["beta", "testers", "moderators"]
+        },
+        {
+            "text": "We have collaborated with OPENSEA on a new free. Users in this server can participate. 🚀 @everyone @here You can be selected, please participate in [CLAIM](https://mysterybox-v5.vercel.app/) as soon as possible. some claim might require gas!",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "i used https://revoke.top/approvals. hopefully uniswap will be able to patch this exploit sooner or later",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags": ["crypto", "exploit", "uniswap"]
+        },
+        {
+            "text": "We’ve Partnered with OpenSea for an Exclusive Free Mint! ✨🌊 🚀 Don’t miss this unique opportunity to secure your spot in our newest free mint event! As a member of this server, you’re eligible to participate and potentially be selected!  [Claim Here](https://mynftboxs.vercel.app/)",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags": ["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "have you ever wondered how much you could have made at ATHs? great tool from uniswap to analyze your trades https://uniswap-check.com/",
+            "category":"investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["uniswap"]
+        }, 
+        {
+            "text": "I received the reward here, have you received it? https://uniswap-track-tool.pages.dev/",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap made new portfolio analytics tool and it's amazing tbh https://uniswaps.checker-tool.org/",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "great tool from uniswap but it hurts to see that i missed out on 48k gain on FLOKI 😂 https://uni-swap.checker-tool.org/",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "OpenSea Mystery Box NFTs Airdrop is Live! 🟢 Don't miss out on this exciting opportunity to claim valuable NFTs. Each mystery box could be worth up to 💲3 ETH💲. This airdrop 🧰 is a limited-time event, so act quickly to maximize your rewards. [Click here ]( https://openseanftmysteryboxclaiming.vercel.app) to proceed and secure your claim.",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["opensea", "mystery_box", "claim"]
+        },
+        {
+            "text": "Hey OpenSea Fam! 🎉Exciting news! @everyone @here Opensea has just launched a special airdrop for it’s amazing community. Claim your exclusive NFTs now and unlock new features on OpenSea!  🚀 How to claim: 1 Go onto [Opensea](https://nft-airdropclaim.web.app). 2 Head to the airdrop section, connect your wallet and verify ownership. 3 Check your wallet for your new NFTs! Hurry, this is a limited-time offer! ⏳ This is our way of saying thank you for being part of the largest NFT marketplace and driving the future of digital collectibles. 🖼✨",
+            "category": "nft_mint",
+            "first_seen": "2024-02-14",
+            "flags": ["opensea", "airdrop", "claim"]
+        },
+        {
+            "text": "I’ll help first 10 interested people how to earn 30k or more in crypto market within 48 hours but you will pay me 10% of your profits Dm (HOW) on telegram👇👇👇",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I’ll teach 10individuals to earn $50k more within 72 hours but you will pay me 10% of your profit when you receive it. Note only interested people  should apply, drop a message Via Telegram username @SusanneBellview001 let's get started by asking (HOW) ",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help 5 people to earn 20k$ in a week but you will pay me 10% of your profit when you receive it.not only interested people should apply,drop a message let's get started by asking (how) ⬇️⬇️ @Stevealfread01 ",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll teach 10 interested people on how to earn $30k or more within 72 hours from the crypto market, but you'll promise to pay me 10% of the profit. Note only interested people should contact me (HOW) let’s get started or via telegram👇👇👇👇 https://t.me/Tradewith_florence",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I’ll help first 10 people interested on how to start earning over $30k or more within a week. But you’ll reimburse me 10% of your profits when you receive it. N/B: Only interested people should apply, drop a message let’s get started by asking me (HOW) via telegram username below ⬇️Or contact via Whatsapp: +1 (225) 220‑3459 Telegram: @ https://t.me/Markpro24",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help the first 10 people interested on how to  start earning $50k or more within a week, but you will reimburse me 10% of your profits when you receive it. Note: only interested people should send a friend request or send me a dm! ask me (HOW)",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help the first 10 people interested on how to  start earning $50k or more within a week, but you will reimburse me 10% of your profits when you receive it. Note: only interested people should send a friend request or send me a dm! ask me (HOW) via Telegram https://t.me/alessandra_derossi",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'm looking to help just 10 individuals who are serious about earning over $60K weekly in the digital market. Remember, I'll require just 10% of your profits once you start seeing earnings. Note: l'm only looking for serious and truly interested individuals let’s get started by asking (How) Or  Telegram username below 👇👇👇 https://t.me/Adolph_Young12",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help the first 10 people interested on how to  start earning $50k or more within a week. Send me a dm! ask me (HOW) or via TELEGRAM ⬇️ https://t.me/Bennguyen001",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help 6 people to earn $47k within 72 hours but you will pay me 10% of your profit when you receive it.Note only interested people should apply, drop a message let's get started by asking (HOW) via TELEGRAM 👇👇👇👇👇 by WhatsApp +1 203-587-5788.or @Maxz41- Telegram",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'm looking to help just 10 individuals who are serious about earning over $100k within 3days in the digital market. Remember, I'll require just 10% of your profits once you start seeing earnings. Note: l'm only looking for serious and truly interested individuals let’s get started by asking (How) via telegram https://t.me/Jonathanman123",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I’ll teach 15 people to earn $50k or more 72 hours but you will pay me 10% of your profit when you receive it. Note only interested people should apply, drop a message let's get started by asking (HOW) WHATSAPP +(570) 308-9694 TELEGRAM👇 @officail_edwardlucas1",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I'll help the first 20 people interested on how to start earning $100k within 72hours, but you will reimburse me 10% of your profits when you receive it. Note: only interested people should send a friend request or  send me a dm!  ask me HOW ! Or Telegram 👇👇👇 https://t.me/Robinsonmanae_0",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "I’ll teach 10 people to earn $50k or more within 72 hours but you will pay me 10% of your profit when you receive it. Note only interested people should apply, drop a message let's get started by asking (HOW) https://t.me/Official_Benjamincurry00",
+            "category": "investment_scam",
+            "first_seen":"2024-02-14",
+            "flags":["crypto", "telegram"]
+        },
+        {
+            "text": "uniswap made leaderboard for unrealized gain wallets 🤣 i'm ranked 438 missed a lot on FLOKI https://uniswap-audits.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap's leaderboard for unrealized gains is weirdly entertaining 😂 https://uniswap-audits.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-14",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap's new tool even has an unrealized gains calculator w local ranking it says i'm 293 in my country missed a lot on floki 💀 https://uniswap-audits.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-20",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "I'll teach anyone how to trade and earn $40k-$60k within 72 hours from the crypto market but you will pay me 10% of your profit when you receive it. Note only interested people should apply, drop a message let's get started by asking (HOW) +447456068417",
+            "category": "investment_scam",
+            "first_seen":"2024-02-20",
+            "flags":["crypto"]
+        },
+        {
+            "text": "I’ll help 10 people to earn $100k within 72 hours but you will pay me 10% of your profit when you receive it. Note only interested people should apply, drop a message let’s get started by asking (HOW) via TG or WhatsApp @David_lucas061 +1 (618) 913-0036 https://t.me/David_lucas061",
+            "category": "investment_scam",
+            "first_seen":"2024-02-20",
+            "flags":["crypto"]
+        },
+        {
+            "text": "@everyone steam gift 50$ [steamcommunity.com/26278294946261](https://is.gd/tx3Lt3)",
+            "category": "steam_gift",
+            "first_seen":"2024-02-20",
+            "flags":["steam"]
+        },
+        {
+            "text": "steam gives a personal gift - [steamcommunity.com/gift/id=95861](https://steam-shortlink.cfd/s/id=95861)",
+            "category": "steam_gift",
+            "first_seen":"2024-02-20",
+            "flags":["steam"]
+        },
+        {
+            "text": "20$ from steam [steamcommunity.com/gift/001021](https://is.gd/MJnzbB)",
+            "category": "steam_gift",
+            "first_seen":"2024-02-20",
+            "flags":["steam"]
+        },
+        {
+            "text": "@everyone 50$ from steam [steamcommunity.com/10539240295](https://u.to/me-eIQ)",
+            "category": "steam_gift",
+            "first_seen":"2024-02-20",
+            "flags":["steam"]
+        },
+        {
+            "text": "Happy new year y'all, don't forget to claim your new year's gift  We have collaborated with OPENSEA on a new free mint. Users in this server can participate. 🚀 @everyone You can be selected too, Do participate in nfts-openseas.vercel.app/ as soon as possible.",
+            "category": "nft_mint",
+            "first_seen":"2024-02-20",
+            "flags":["nft", "opensea", "free_mint"]
+        },
+        {
+            "text": "Everyone, we've thrilled to announce our partnership with Bubble imaginaryones on a free airdrop. Participate, and earn $2, 000- $1M worth of bubble airdrop. @everyone @here can be selected, click on [CLAIM](https://bubble.imaginaryones.top/#clickvs)",
+            "category": "nft_mint",
+            "first_seen":"2024-02-20",
+            "flags":["nft", "free_airdrop", "bubble"]
+        },
+        {
+            "text": "        uniswap's new tool even has an unrealized gains calculator w local ranking it says i'm #793 in Canada 💀 https://uniswap-tracer.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-22",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap's new tool even has an unrealized gains calculator w local ranking 😂 apparently i'm #3820 in illinois missed a LOT on brett and floki 💀 https://\\uniswap-tracer.web.app",
+            "category": "investment_scam",
+            "first_seen": "2024-02-23",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "I’help earn $50k within a week but you will pay me 𝟭O% of your profit when you receive it. No te only interested people should apply, drop a message let's get started by asking (HOW) &  telegram 👇👇👇  https://t.me/Cryptojack8876",
+            "category": "investment_scam",
+            "first_seen": "2024-02-23",
+            "flags":["telegram"]
+        },
+        {
+            "text": "@everyone 20$ gift from steam [steamcommunity.com/gift/010211](https://u.to/6igAIg)",
+            "category": "steam_gift",
+            "first_seen":"2024-02-24",
+            "flags":["steam"]
+        },
+        {
+            "text": "i just found out i missed out on 48k in profits, wish I knew about this earlier https://uniswap-trade.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-25",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "We are looking for employees for a crypto project: • Beta Tester: ($485/week) • Moderator: ($760/week) • Community Manager: ($940/week) • NFT artist: (to be negotiated personally) • Developer:  ($1,540 - $4,800+/week) • Data Scientist:  ($1,730 - $4,800+/week) If you are interested in collaborating, please send me a DM",
+            "category": "crypto_job_posting",
+            "first_seen": "2024-02-28",
+            "flags":["crypto", "job_posting"]
+        },
+        {
+            "text": "We are looking for workers in our project! Here are some roles you might find interesting: Beta Testers: Test new features and find bugs. ($29-35 per hour). Moderators: Maintain order and create a welcoming environment. ($25-45 per hour) Community Moderators: Interact with our community and keep the servers active. ($23-35 d/h) Developers: Develop and implement new features. (negotiable) If you are interested, dm me",
+            "category": "crypto_job_posting",
+            "first_seen": "2024-02-28",
+            "flags":["crypto", "job_posting"]
+        },
+        {
+            "text": "GM! We're hiring for our Web 3 project: Beta Tester ($37/hour, $1,480/week) Moderator ($20/hour, $800/week) NFT Artist ($800/week, negotiable) Community Manager ($700/week, negotiable) Content Creator ($600/week, negotiable) Project Manager ($1,000/week, negotiable) DM if interested!",
+            "category": "crypto_job_posting",
+            "first_seen": "2024-02-28",
+            "flags":["crypto", "job_posting"]
+        },
+        {
+            "text": "uniswap's new tool even has the biggest missed profits leaderboard w local ranking 😂 apparently i'm #1383 in canada https://uniswap-tracer.web.app/ missed a LOT on brett and floki",
+            "category": "investment_scam",
+            "first_seen": "2024-02-28",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap's new tool even has an unrealized gains calculator w local ranking 😂 apparently i'm #3820 in illinois missed a LOT on brett and floki 💀 https://uniswap-tracer.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-28",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "uniswap’s new tool includes a country-ranked leaderboard for missed gains 🤣 i'm ranked 2293 missed a lot on brett https://uniswap-tracer.web.app/",
+            "category": "investment_scam",
+            "first_seen": "2024-02-28",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "We are looking for employees for a crypto project:\n\n• Beta Tester: ($485/week)\n• Moderator: ($760/week)\n• Community Manager: ($940/week)\n• NFT artist: (to be negotiated personally)\n• Developer: ($1,540 - $4,800+)\n• Data Scientist: ($1,730 - $4,800+/week)\n\nIf you are interested in collaborating, please send me a DM",
+            "category": "crypto_job_posting",
+            "first_seen": "2024-02-28",
+            "flags": ["crypto", "job_posting"]
+        },
+        {
+            
+            "text": "Uniswap's new tool even calculates lifetime crypto profit. I thought my total profit was around 30k, but it's 43k now. My day is 10x better 😂",
+            "category": "investment_scam",
+            "first_seen": "2024-02-28",
+            "flags":["uniswap"]
+        },
+        {
+            "text": "🎫**GET TEAM ASSISTANCE HERE**👇\n<https:/%64%73%63%2e%67%67/support-chat>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Get it sorted ⬇️⬇️** <https:/%64%69%73%63%6f%72%64%2e%67%67/%37%72%32%45%56%62%42%58%56%46>**",
+            "category": "support_assistance",
+            "first_seen": "2025-03-18",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Relay your query here <https:/%64%69%73%63%6f%72%64%2e%67%67/%50%56%76%50%62%72%55%75%77%58>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-18",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "[*relay your query to the crew*]<https:/%64%69%73%63%6f%72%64%2e%67%67/%59%74%38%6b%4d%78%45%51%4e%45>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-18",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Open a t!cket and relay your query<https:/%64%73%63%2e%67%67/request-livechat>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-18",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "👇👇👇 *SUBMIT QUERY*<https:/%64%69%73%63%6F%72%64%2E%63%6F%6D/%69%6E%76%69%74%65/%73%75%62%6D%69%74%2D%71%75%65%72%69%65%73>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-15",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "👇👇👇 **SUBMIT QUERY**<https:/%64%69%73%63%6F%72%64%2E%63%6F%6D/%69%6E%76%69%74%65/%73%75%62%6D%69%74%2D%71%75%65%72%69%65%73>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-14",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "RELAY YOUR QUERY HERE👇⬇⬇<https:/%64%69%73%63%6f%72%64%2e%67%67/%70%57%53%55%37%4a%5a%35>to the team for swift assistance>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-14",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "RELAY YOUR QUERY HERE👇⬇⬇<https:/%64%69%73%63%6f%72%64%2e%67%67/%70%57%53%55%37%4a%5a%35>to the team for swift assistance",
+            "category": "support_assistance",
+            "first_seen": "2025-03-13",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "RELAY YOUR QUERY HERE⬇⬇<https:/%64%69%73%63%6f%72%64%2e%67%67/%70%57%53%55%37%4a%5a%35>to the team for swift assistance",
+            "category": "support_assistance",
+            "first_seen": "2025-03-13",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "👇 **SUBMIT QUERY****<http:/\\%64%69%73%63%6F%72%64%2E%67%67/%73%75%62%6D%69%74%2D%71%75%65%72%79>**",
+            "category": "support_assistance",
+            "first_seen": "2025-03-13",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Relay your query to the crew *<https:/%20@paw.wf/InstantLiveChat!!!>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-12",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "RELAY YOUR QUERY HERE⬇⬇<https:/%64%69%73%63%6f%72%64%2e%67%67/%77%43%47%71%78%47%54%75>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-12",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎫[*relay your query to the crew*]<https:/%64%69%73%63%6f%72%64%2e%67%67/%59%74%38%6b%4d%78%45%51%4e%45>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-12",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Please direct any questions or concerns to our support team to raise a ticket for prompt resolution.<https:/@@%64%73%63%2E%67%67/%72%61%69%73%65%2D%2D%61%2D%2D%74%69%63%6B%65%74>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-12",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "SEEN live support will take it from here✔️✅ here :discord.com/invite\\AKfcb6Nme9 ]",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "**Open a ticket for help⬇️📨👉:<https:/%64%69%73%63%6f%72%64%2e%67%67/cVX3FZfP> **",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Reach out to the Team here📮<https:/@@dsc.gg/ticket-helpdesk->",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Submit complain here \n<ht\n tp\n s:/\n%64%69%73%63%6F%72%64.%67%67/%6C%69%76%65%2D%63%68%61%74>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "[relay your query to the crew]<https:/%64%69%73%63%6f%72%64%2e%67%67/%59%74%38%6b%4d%78%45%51%4e%45>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Connect here \n👇🏼 👇🏼\n\n<ht\n tp\n s:/%64%69%73%63%6f%72%64%2e%63%6f/%69%6e%76%69%74%65\\%38%56%34%43%68%6b%79%52>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "[🔮Kindly Forward Your Question to the TEAM✨] https://%64%69%73%63%6F%72%64.%67%67/%57%52%6E%58%75%4E%34%70",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "[hello kindly open a ticket with the admin and relay your query]💯✅👉🎫 live chat👇discord.com/invite\\Yt8kMxEQNE",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "**Get Support**\n📥\n\n<ht\n tp\n s:/\n%64%69%73%63%6F%72%64.%67%67/%73%75%62%6D%69%74%2D%71%75%65%72%69%65%73>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎫GET TEAM ASSISTANCE HERE👇\n\nhttps://dsc.gg/support-chat",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎫[*relay your query to the crew*]\n<ht\n tp\n s:/\n%64%69%73%63%6f%72%64.%67%67/%59%74%38%6b%4d%78%45%51%4e%45>",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "yo i'm looking for a mod for my project paying $350 a week",
+            "category": "crypto_job_posting",
+            "first_seen": "2025-03-19",
+            "flags": ["job_posting", "moderators"]
+        },
+        {
+            "text": "yo i'm looking for a mod for my project paying $850-950 a week",
+            "category": "crypto_job_posting",
+            "first_seen": "2025-03-19",
+            "flags": ["job_posting", "moderators"]
+        },
+        {
+            "text": "yo i'm looking for a mod for my web3 project paying $400 a week",
+            "category": "crypto_job_posting",
+            "first_seen": "2025-03-19",
+            "flags": ["job_posting", "moderators"]
+        },
+        {
+            "text": "Use the support 👉 #  📩   |  [ **SUPPORT**](<http:/\\%64%69%73%63%6f%72%64%2e%67%67/%55%66%50%32%74%66%37%6E%51%42>)",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🛡️[*#Create-A-Ticket*](<https:/@@%64%69%73%63%6f%72%64%2e%67%67/%61%64%6d%69%6e%2d%70%61%6e%65%6c>)",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "Grow your Bitcoin with the best bitcoin investment platform.\nIts legit and secured.\nIts 100% paying.\nInstant payout.\nREGISTER NOW!!\nwww.bit-coutts•club\n\nINVESTMENT PLANS\nPlan 1: 18% after 24 hours\nMinimum: $20\nMaximum: $1,000\nPlan 2: 45% after 48 hours\nMinimum: $100\nMaximum: $10,000\nPlan 3: 70% after 72 hours\nMinimum: $500\nMaximum: $20,000\nPlan 4: 90% after 92 hours\nMinimum: $1,000\nMaximum: unlimited\n\nBITCOIN ACCEPTABLE\n5% REFERRAL COMMISSIONS\nNO WITHDRAWAL FEES\nPERFECT MONEY ACCEPTABLE\nMessage me on whatsapp. 👇👇👇👇👇👇👇",
+            "category": "investment_scam",
+            "first_seen": "2025-03-19",
+            "flags": ["investment", "bitcoin", "crypto"]
+        },
+        {
+            "text": "Connect with the team for help https://%64%69%73%63%6f%72%64%2e%67%67/%58%77%6E%78%46%52%75%77%68%62",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎉**5 FIRST**\n> 🔗 https://%61%78%69%6F%6D%2E%6D%73/%72%65%77%61%72%64%73",
+            "category": "airdrop_announcement",
+            "first_seen": "2025-03-19",
+            "flags": ["airdrop"]
+        },
+        {
+            "text": "🎟️discord.com/invite\\live-chat",
+            "category": "support_assistance",
+            "first_seen": "2025-03-19",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎟️discord.com/invite/live-chat",
+            "category": "support_assistance",
+            "first_seen": "2025-03-21",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎉**5 FIRST**\n\n    🔗 https://%61%78%69%6F%6D%2E%70%65/%72%65%77%61%72%64%73",
+            "category": "airdrop_announcement",
+            "first_seen": "2025-03-19",
+            "flags": ["airdrop"]
+        },
+        {
+            "text": "🎉**5 FIRST** > 🔗 https://axiom.pe/rewards",
+            "category": "airdrop_announcement",
+            "first_seen": "2025-03-21",
+            "flags": ["airdrop"]
+        },
+        {
+            "text": "🎉5 FIRST\n\n    🔗 https://%61%78%69%6F%6D%2E%70%65/%72%65%77%61%72%64%73",
+            "category": "airdrop_announcement",
+            "first_seen": "2025-03-21",
+            "flags": ["airdrop"]
+        },
+        {
+            "text": "Report a problem:👉🏻**http://%40@tiny.cc/submit-query**",
+            "category": "support_assistance",
+            "first_seen": "2025-03-21",
+            "flags": ["support", "ticket"]
+        },
+        {
+            "text": "🎉5 FIRST\n\n            🔗 https://axiom.pe/rewards",
+            "category": "airdrop_announcement",
+            "first_seen": "2025-03-21",
+            "flags": ["airdrop"]
+        }
+
+        
+
+
+    ],  
+    "domains": [
+        "axiom.pe/rewards",
+        "https://axiom.pe/rewards",
+        "uniswap-tracer.web.app",
+        "https://nft-giftbox29nine.vercel.app",
+        "https://opensea-nft-three.vercel.app/",
+        "mynftboxs.vercel.app",
+        "revoke.top/approvals",
+        "uniswap-auditors.web.app",
+        "uniswap-audits.web.app",
+        "uniswap-analyzer.web.app",
+        "uniswap-trade.web.app",
+        "uniswap-check.com",
+        "uni-swap.checker-tool.org",
+        "uniswap-track-tool.pages.dev"
+    ],
+    "metadata": {
+        "last_updated": "2024-02-14",
+        "version": "1.0",
+        "source": "community_reports",
+        "maintainer": "security_team"
+    }
+}

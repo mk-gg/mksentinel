@@ -1,0 +1,14 @@
+aiohttp==3.11.13
+beautifulsoup4==4.13.3
+CairoSVG==2.7.1
+curl_cffi==0.9.0
+emoji==2.14.1
+httpx==0.28.1
+numpy==2.2.3
+Pillow==11.1.0
+pilmoji==2.0.4
+protobuf==5.29.3
+Requests==2.32.3
+rich==13.9.4
+scikit_learn==1.6.1
+sentence_transformers==3.4.1
