@@ -17,10 +17,10 @@ function Login() {
   return (
     <div>
       <Card className="w-[350px] mx-auto mt-10">
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle>Welcome to Sentinel</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex justify-center">
           <Button onClick={login} variant="outline">
             Login with Google
           </Button>
