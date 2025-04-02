@@ -125,7 +125,7 @@ export const BanChart = () => {
               color: "hsl(var(--primary))",
             },
           }}
-          className="h-[200px]"
+          className="h-[400px]"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
