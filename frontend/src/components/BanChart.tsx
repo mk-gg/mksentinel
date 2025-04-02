@@ -112,12 +112,12 @@ export const BanChart = () => {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-[600px]">
       <CardHeader>
         <CardTitle>Bans per Day</CardTitle>
         <CardDescription>Number of bans issued each day</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         <ChartContainer
           config={{
             count: {
@@ -125,7 +125,7 @@ export const BanChart = () => {
               color: "hsl(var(--primary))",
             },
           }}
-          className="h-[400px]"
+          className="h-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
