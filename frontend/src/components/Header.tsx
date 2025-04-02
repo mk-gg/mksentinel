@@ -6,17 +6,20 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useAuth } from "../contexts/AuthContext"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function Header() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { user, logout, loading } = useAuth()
+interface HeaderProps {
+  showSkeleton?: boolean;
+}
 
-  if (loading) {
+export function Header({ showSkeleton = false }: HeaderProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  if (showSkeleton) {
     return (
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <Skeleton className="h-8 w-[100px]" />
           <div className="flex items-center space-x-4">
-            <Skeleton className="h-10 w-[60px]" />
             <Skeleton className="h-10 w-[60px]" />
             <Skeleton className="h-10 w-[60px]" />
             <Skeleton className="h-10 w-10 rounded-full" />
@@ -27,7 +30,7 @@ export function Header() {
   }
 
   if (!user) {
-    return null // Don't render the header if there's no user
+    return null
   }
 
   const initials = user.username
