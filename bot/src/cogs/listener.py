@@ -11,7 +11,7 @@ server_bots = {
     1217477415757025444, # EndlessHerald [Axie Infinity]
 }
 
-JOIN_AGE_ACCOUNT = 50
+JOIN_AGE_ACCOUNT = 65
 
 #cogs/listener.py
 class Listener(commands.Cog):
@@ -46,6 +46,7 @@ class Listener(commands.Cog):
     async def on_member_join(self, member):
         if str(member.guild.id) not in Config.guilds:
             return
+        member_profile = None 
         try:
             member_profile = await member.profile(with_mutual_guilds=False, with_mutual_friends_count=False, with_mutual_friends=False)
         except Exception as e:
@@ -101,27 +102,54 @@ class Listener(commands.Cog):
     # Handle events
     async def handle_update_event(self, data):
         print(f'Called handle_update_event')
+        # TODO: Check if they change their profile to common scam profiles (admin, announcement, airdrop, .etc..)
 
     async def handle_join_event(self, data):
         print(f'Called handle_join_event')
+        # TODO: Check if bio contains Scam Link (Since some malicous users have one)
     
     async def handle_message_event(self, data):
-        scam_message = self.client.get_cog('MessageParse')
-        if scam_message:
-            # Check using the method from MessageParse
-            sent_message = data['message']
-            is_scam_message = await scam_message.is_similar(sent_message)
+        sent_message = data['message']
+        message_obj = data['message_obj']
+        normalized_message = translate_confusable_characters(sent_message)
+        # Get the cogs once
+        scam_attempt_cog = self.client.get_cog('Watcher')
+        common_scam_message_cog = self.client.get_cog('MessageParse')
+        
+        # Check for scam attempts first
+        if scam_attempt_cog:
+            is_scam_attempt = await scam_attempt_cog.is_scam_attempt(data)
+            if is_scam_attempt:
+                await self.handle_scam(message_obj, data, "Scam Attempt")
+                return
+        
+        # Then check for common scam messages
+        # TODO: Have a custom moderation for categories
+        if common_scam_message_cog:
+            is_scam_message = await common_scam_message_cog.is_similar(normalized_message)
             if is_scam_message:
-                try:
-                    await data['message_obj'].add_reaction('⚠️')
-                except Exception as e:
-                    print(e)
-                data['reason'] = "Scam Attempt"
-                await self.ban_user_service(data)
-    
+                # TODO:  Add NSFW Check
+                await self.handle_scam(message_obj, data, "Scam Attempt")
+                return
+        
+        
+
+            
+
+            
+    async def handle_scam(self, message_obj, data, reason):
+        try:
+            await message_obj.add_reaction('⚠️')
+        except Exception as e:
+            print(f"Failed to add reaction: {e}")
+        
+        data['reason'] = reason
+        await self.ban_user_service(data)
+
     async def ban_user_service(self, data):
         moderation_cog = self.client.get_cog('Moderation')
         if moderation_cog:
+            print(f"[#F37199]Banning {data['member']}")
             await moderation_cog.ban_user(data, reason=data['reason'], send_panel_to_channel=True, delete_message_seconds=3600)
 
         

@@ -14,8 +14,9 @@ class CloudflareResolver(MultiDomainResolver):
         'discord.com',
         'easyurl.net',
         'discord.co',
-        'discord.id',
         'discord.gg', 
+        'discadia.com',
+        "t2m.io", 
         'sur.li',
         'discordapp.com'
 

@@ -406,24 +406,25 @@ def check_date(input_date, day):
 #     return None
 
 def clean_normalize_url_ai(url):
-    """Use AI to clean and normalize URLs when regular cleaning fails."""
-    from google import genai
-
-    client = genai.Client(api_key="AIzaSyCMpcoAPfmbiMISF6UxrZv242q9stqaQvg")
-    
-    prompt = f"""
-    Task: Clean and normalize the following URL by:
-    1. Removing any credentials (usernames, passwords, @symbols)
-    2. Ensuring proper scheme (https://)
-    3. Preserving the core domain and path
-    4. Identifying any suspicious patterns
-
-    URL: {url}
-
-    Output ONLY the cleaned URL with no additional text or explanations.
-    """
-
     try:
+        """Use AI to clean and normalize URLs when regular cleaning fails."""
+        from google import genai
+        from src.config import Config
+        client = genai.Client(api_key=Config.apikeys["gemini_key_2"])
+        
+        prompt = f"""
+        Task: Clean and normalize the following URL by:
+        1. Removing any credentials (usernames, passwords, @symbols)
+        2. Ensuring proper scheme (https://)
+        3. Preserving the core domain and path
+        4. Identifying any suspicious patterns
+
+        URL: {url}
+
+        Output ONLY the cleaned URL with no additional text or explanations.
+        """
+
+    
         response = client.models.generate_content_stream(
             model="gemini-2.0-flash",
             contents=prompt
@@ -435,7 +436,7 @@ def clean_normalize_url_ai(url):
             
         return result.strip()
     except Exception as e:
-        print(f"AI cleaning failed: {e}")
+        print(f"Utils: AI cleaning failed: {e}")
         return None
 
 def find_message_url(message: str) -> Optional[str]:

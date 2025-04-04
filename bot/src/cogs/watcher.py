@@ -131,8 +131,7 @@ class Watcher(commands.Cog):
             
             self.main_queue.task_done()
 
-    async def handle_message_event(self, data):
-        await printlog(data, data['event'])
+    async def is_scam_attempt(self, data):
         try:
             has_multiple_lines = has_multiple_new_lines(data['message'])
             message = data['message']
@@ -147,23 +146,56 @@ class Watcher(commands.Cog):
                     processed_final_link= clean_normalize_url_ai(processed_final_link)
                     print(f"Final Link: {processed_final_link}")
             
-
-            
-
             if is_discord_url(processed_final_link):
                 guild_name = get_guild_name(processed_final_link)
                 if guild_name:
                     if is_scam_server(guild_name):
-                        
-                        await data['message_obj'].add_reaction('⚠️')
-                        create_panel(processed_final_link, "Scam Server", guild_name,  data['message'], data['member'])
-                        moderation_cog = self.client.get_cog('Moderation')
-                        if moderation_cog:
-                            await moderation_cog.ban_user(data, reason="Scam Attempt", delay=0, delete_message_seconds=3600)
+                        return True
+                        # await data['message_obj'].add_reaction('⚠️')
+                        # create_panel(processed_final_link, "Scam Server", guild_name,  data['message'], data['member'])
+                        # moderation_cog = self.client.get_cog('Moderation')
+                        # if moderation_cog:
+                            # await moderation_cog.ban_user(data, reason="Scam Attempt", delay=0, delete_message_seconds=3600)
              
-            
+            return False
         except Exception as e:
             print(e)
+
+    async def handle_message_event(self, data):
+        
+        await printlog(data, data['event'])
+        pass
+        # try:
+        #     has_multiple_lines = has_multiple_new_lines(data['message'])
+        #     message = data['message']
+        #     if has_multiple_lines:
+        #         message = combine_lines(data['message'])
+        #     # print(f"{message}")
+        #     normalized_message = translate_confusable_characters(message)
+        #     processed_final_link = url_processor.process_url(normalized_message)
+        #     if processed_final_link:
+        #         link = contains_any_domain(processed_final_link, ignore_domains)
+        #         if not link:
+        #             processed_final_link= clean_normalize_url_ai(processed_final_link)
+        #             print(f"Final Link: {processed_final_link}")
+            
+
+            
+
+        #     if is_discord_url(processed_final_link):
+        #         guild_name = get_guild_name(processed_final_link)
+        #         if guild_name:
+        #             if is_scam_server(guild_name):
+                        
+        #                 await data['message_obj'].add_reaction('⚠️')
+        #                 create_panel(processed_final_link, "Scam Server", guild_name,  data['message'], data['member'])
+        #                 moderation_cog = self.client.get_cog('Moderation')
+        #                 if moderation_cog:
+        #                     await moderation_cog.ban_user(data, reason="Scam Attempt", delay=0, delete_message_seconds=3600)
+             
+            
+        # except Exception as e:
+        #     print(e)
 
     async def handle_update_event(self, data):
         print(f'Called handle_update_event')
@@ -445,15 +477,39 @@ class Watcher(commands.Cog):
 
 
         container = [
-            [1333722487502143591, 'Scam Attempt', ''],
-            [1328629560979357736, 'Scam / Impersonation', ''],
-            [1235547244162318399, 'Scam / Fake Support', ''],
-            
-            [1256663739797864611, 'User banned from Axie Infinity for Scam Attempt', r'🎫**GET TEAM ASSISTANCE HERE**👇  <https:/%64%73%63%2e%67%67/support-chat>'],
-            [1326693367576268945, 'User banned from Ronin Network for Scam Attempt', r'RELAY YOUR QUERY HERE ⬇️⬇️⬇️ discordapp.com/invite\H32mvkSj'],
-            [962118800285761537, 'User banned from Ronin Network for Scam Attempt', r'**Refer your question/issues to the Team📨** <http:/%40%20@dsc.gg/Support-Chat>'],
 
-           
+            [1349600801516945468, 'Scam Bio Link', ''],
+            [1356694338041679933, 'Scam Bio Link', ''],
+            [1331598769304895580, 'User banned from Axie Infinity for Scam Attempt', r'🎫[**Use the official link to contact the support team here for assistance!!**]<https:/%64%69%73%63%6f%72%64%2e%67%67/%62%74%4D%54%62%75%32%46%4B%32>'],
+            [1348642413702549535, 'User banned from Axie Infinity for Scam Attempt', r'Reach out to admin for help here👇👇**<https:/%64%69%73%63%6f%72%64%2e%67%67/%7A%50%34%41%71%64%41%42%41%57>**'],
+            [1334202682189025351, 'User banned from Axie Infinity for Scam Attempt', r'Kindly Contact The Support Center⬇️ For Assistancediscord.com/invite\TVTURF2Dek'],
+
+            [1089340754175991960, 'User banned from Ronin Network for Scam Attempt', r'<https:/%64%69%73%63%6F%72%64%2E%67%67/%4A%33%79%4A%58%64%6A%4B%52%61>to the team'],
+            [1185730314249703525, 'User banned from Ronin Network for Scam Attempt', r'**[CREATE A TlCKET🎫]:**👇<https:/%64%69%73%63%6f%72%64%2e%67%67/%55%4b%52%68%77%63%59%45%59%36> <@1354921261339246763>'],
+            [1339729916941308004, 'User banned from Ronin Network for Scam Attempt', r'REACH OUT TO AN ADMIN FOR MORE ASSISTANCEdiscordapp.com/invite\Kb2sqgewXJ <@1071006504850821262>'],
+            [1339549011186679850, 'User banned from Ronin Network for Scam Attempt', r'Write your issues here for prompt assistance👇🏽https://discord.gg/eWnRTCes'],
+            [1345662833685430273, 'User banned from Ronin Network for Scam Attempt', r'Get it sorted ⬇️⬇️** <https:/%64%69%73%63%6f%72%64%2e%67%67/%37%72%32%45%56%62%42%58%56%46>**'],
+            [566487433391243273, 'User banned from Ronin Network for Scam Attempt', r'<https:/%64%69%73%63%6f%72%64%2e%67%67/%59%74%38%6b%4d%78%45%51%4e%45> relay query to team'],
+            [936744039699587092, 'User banned from Ronin Network for Scam Attempt', r'ASK ADMINS⬇️ ⬇️ <https:/%64%69%73%63%6f%72%64%2e%67%67/%32%61%45%32%7a%64%73%33>'],
+
+            [1340373728730808331, 'User banned from Ronin Network for Scam Attempt', r'👇👇👇 *SUBMIT QUERY*<https:/%64%69%73%63%6f%72%64%2e%67%67/%5a%36%71%68%76%5a%66%42%78%53>'],
+            [1330915964086386723, 'User banned from Ronin Network for Scam Attempt', r'Refer this question to the Team 🎫 <https:/%64%69%73%63%6F%72%64%2E%67%67/%73%4A%67%67%4A%63%70%72%38%45> <@268155334802014208>'],
+            
+            [1199116626113593356, 'Scam Bio Link', ''],
+            [1222012542809931786, 'Scam Bio Link', ''],
+            [1220040770430439434, 'Scam Bio Link', ''],
+            [1218539315928371251, 'Scam Bio Link', ''],
+            [1217839557219713038, 'Scam Bio Link', ''],
+            [1215920671314411563, 'Scam Bio Link', ''],
+            [1218901602048675930, 'Scam Bio Link', ''],
+            [1217880881595678905, 'Scam Bio Link', ''],
+
+            [1072373597785575454, 'Scam Bio Link', ''],
+
+
+
+
+
       
 
 

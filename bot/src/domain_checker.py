@@ -1,3 +1,4 @@
+import random
 from urllib.parse import urlparse
 from typing import Set, Optional
 from src.utils  import find_message_url
@@ -10,38 +11,48 @@ from src.config import Config
 
 
 def clean_normalize_url_ai(url):
-    API_KEY2 = Config.apikeys['gemini_key_1']
+
     """Use AI to clean and normalize URLs when regular cleaning fails."""
     from google import genai
 
-    client = genai.Client(api_key=API_KEY2)
+
+    api_keys = Config.apikeys["gemini_keys"]  # Assuming your keys are in a list
+    random.shuffle(api_keys) # Shuffle the keys to add randomization.
     
-    prompt = f"""
-    Task: Clean and normalize the following URL by:
-    1. Removing any credentials (usernames, passwords, @symbols)
-    2. Ensuring proper scheme (https://)
-    3. Preserving the core domain and path
-    4. Identifying any suspicious patterns
+    for api_key in api_keys:
+        try:
 
-    URL: {url}
+            client = genai.Client(api_key=api_key)
 
-    Output ONLY the cleaned URL with no additional text or explanations.
-    """
+            prompt = f"""
+            Task: Clean and normalize the following URL by:
+            1. Removing any credentials (usernames, passwords, @symbols)
+            2. Ensuring proper scheme (https://)
+            3. Preserving the core domain and path
+            4. Identifying any suspicious patterns
 
-    try:
-        response = client.models.generate_content_stream(
-            model="gemini-2.0-flash",
-            contents=prompt
-        )
-        
-        result = ""
-        for chunk in response:
-            result += chunk.text
-            
-        return result.strip()
-    except Exception as e:
-        print(f"AI cleaning failed: {e}")
-        return None
+            URL: {url}
+
+            Output ONLY the cleaned URL with no additional text or explanations.
+            """
+
+            response = client.models.generate_content_stream(
+                model="gemini-2.0-flash",
+                contents=prompt
+            )
+
+            result = ""
+            for chunk in response:
+                result += chunk.text
+
+            return result.strip()
+
+        except Exception as e:
+            print(f"API key {api_key[:8]}... failed: {e}. Trying next key.") # print the first 8 characters of the key.
+            continue  # Try the next API key
+
+    print("All API keys failed.")
+    return None  # Return None if all keys fail
 
 class URLProcessor:
     def __init__(self, ignore_domains: set[str], verbose: bool = True):
