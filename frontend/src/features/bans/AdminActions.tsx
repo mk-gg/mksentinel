@@ -115,5 +115,4 @@ export const AdminActions: React.FC<AdminActionsProps> = ({ onBanAdded }) => {
       </DialogContent>
     </Dialog>
   )
-}
-
+} 

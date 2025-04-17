@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
-import { LoginPage } from "./components/LoginPage"
-import { HomePage } from "./components/Homepage"
-import { Bans } from "./components/Bans"
+import { LoginPage } from "./features/login/LoginPage"
+import { HomePage } from "./pages/HomePage"
+import { Bans } from "./features/bans/Bans"
 import { AuthProvider, useAuth } from "./contexts/AuthContext"
 
 function App() {

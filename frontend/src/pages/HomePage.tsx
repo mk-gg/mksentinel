@@ -1,7 +1,7 @@
-import { Header } from "./Header"
-import { Footer } from "./Footer"
-import { BanStatistics } from "./BanStatistics"
-import { BanChart } from "./BanChart"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { BanStatistics } from "@/features/dashboard/BanStatistics"
+import { BanChart } from "@/features/dashboard/BanChart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -49,5 +49,4 @@ export function HomePage() {
       <Footer />
     </div>
   )
-}
-
+} 

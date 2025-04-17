@@ -1,17 +1,17 @@
 import { useEffect, useState, useCallback } from "react"
-import { Header } from "./Header"
-import { Footer } from "./Footer"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 import { useAuth } from "@/contexts/AuthContext"
 import { useToast } from "@/hooks/use-toast"
 import { BASE_URL } from "@/config/api"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
-import { AdminActions } from "./AdminActions"
-import { DataTable } from "./DataTable"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
-import { Button } from "./ui/button"
-import { Skeleton } from "./ui/skeleton"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { AdminActions } from "@/features/bans/AdminActions"
+import { DataTable } from "@/features/bans/DataTable"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { compareDesc } from "date-fns"
 
 interface Ban {
@@ -22,8 +22,6 @@ interface Ban {
   reason: string
   serverId: string
 }
-
-
 
 export function Bans() {
   const [bans, setBans] = useState<Ban[]>([])
@@ -168,7 +166,6 @@ export function Bans() {
     return <div>{error}</div>
   }
   
-
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -237,8 +234,5 @@ export function Bans() {
       <Footer />
       </div>
     </>
-
-
   )
-}
-
+} 

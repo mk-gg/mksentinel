@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle} from "./ui/card"
+import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import { BASE_URL } from '@/config/api'
-import { Skeleton } from './ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface BanStats {
     totalBans: number
@@ -80,4 +80,4 @@ export function BanStatistics() {
             </Card>
         </div>
     )
-}
+} 

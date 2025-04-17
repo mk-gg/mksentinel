@@ -227,4 +227,4 @@ export function DataTable({ bans, onEdit, onDelete, isAdmin }: DataTableProps) {
       </div>
     </>
   )
-}
+} 
