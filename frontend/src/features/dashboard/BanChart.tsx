@@ -4,8 +4,9 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { BASE_URL } from "@/config/api"
-import { parseISO } from "date-fns"
+import { parseISO, subDays, subMonths, isAfter } from "date-fns"
 import { formatInTimeZone } from "date-fns-tz"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Ban {
   banId: number
@@ -18,12 +19,17 @@ interface Ban {
 interface ChartData {
   date: string
   count: number
+  originalDate?: Date
 }
+
+type TimeRange = '7days' | '30days' | '3months' | '6months' | 'all'
 
 export const BanChart = () => {
   const [chartData, setChartData] = useState<ChartData[]>([])
+  const [allBansData, setAllBansData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [timeRange, setTimeRange] = useState<TimeRange>('30days')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,10 +80,13 @@ export const BanChart = () => {
             }
           })
           .filter((item): item is NonNullable<typeof item> => item !== null)
-          .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-          .map(({ date, count }) => ({ date, count }))
+          .sort((a, b) => a.originalDate!.getTime() - b.originalDate!.getTime())
 
-        setChartData(formattedData)
+        // Store the full data set
+        setAllBansData(formattedData)
+        
+        // Apply the initial time filter
+        filterDataByTimeRange(formattedData, timeRange)
       } catch (err) {
         console.error('Error fetching ban data:', err)
         setError("Failed to load ban data")
@@ -88,6 +97,49 @@ export const BanChart = () => {
 
     fetchData()
   }, [])
+
+  useEffect(() => {
+    // Apply time range filter whenever it changes
+    filterDataByTimeRange(allBansData, timeRange)
+  }, [timeRange, allBansData])
+
+  const filterDataByTimeRange = (data: ChartData[], range: TimeRange) => {
+    if (!data.length) return
+
+    const now = new Date()
+    let cutoffDate: Date
+
+    switch (range) {
+      case '7days':
+        cutoffDate = subDays(now, 7)
+        break
+      case '30days':
+        cutoffDate = subDays(now, 30)
+        break
+      case '3months':
+        cutoffDate = subMonths(now, 3)
+        break
+      case '6months':
+        cutoffDate = subMonths(now, 6)
+        break
+      case 'all':
+      default:
+        // No filtering needed for "all"
+        setChartData(data.map(({ date, count }) => ({ date, count })))
+        return
+    }
+
+    // Filter data to include only dates after the cutoff
+    const filteredData = data
+      .filter(item => item.originalDate && isAfter(item.originalDate, cutoffDate))
+      .map(({ date, count }) => ({ date, count }))
+
+    setChartData(filteredData)
+  }
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value as TimeRange)
+  }
 
   if (loading) {
     return (
@@ -113,9 +165,26 @@ export const BanChart = () => {
 
   return (
     <Card className="w-full h-[600px]">
-      <CardHeader>
-        <CardTitle>Bans per Day</CardTitle>
-        <CardDescription>Number of bans issued each day</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <div>
+          <CardTitle>Bans per Day</CardTitle>
+          <CardDescription>Number of bans issued each day</CardDescription>
+        </div>
+        <div className="flex items-center">
+          <span className="text-sm text-muted-foreground mr-2">Time range:</span>
+          <Select value={timeRange} onValueChange={handleTimeRangeChange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7days">Last 7 days</SelectItem>
+              <SelectItem value="30days">Last 30 days</SelectItem>
+              <SelectItem value="3months">Last 3 months</SelectItem>
+              <SelectItem value="6months">Last 6 months</SelectItem>
+              <SelectItem value="all">All time</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer
@@ -155,4 +224,4 @@ export const BanChart = () => {
       </CardContent>
     </Card>
   )
-} 
+}
