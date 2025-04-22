@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BanRepository, Ban, BanStatistics } from '@/repositories/banRepository';
 
+// Define the response type for createBan
+interface CreateBanResponse {
+  ban?: Ban;
+  message?: string;
+}
+
 export function useBanRepository() {
   const repository = BanRepository.getInstance();
   const [bans, setBans] = useState<Ban[]>([]);
@@ -47,50 +53,127 @@ export function useBanRepository() {
   const createBan = useCallback(async (banData: any) => {
     try {
       const result = await repository.createBan(banData);
-      if (!result.error) {
-        // Refresh bans and statistics after creation
-        await Promise.all([
-          fetchBans(true),
-          fetchBanStatistics(true)
-        ]);
+      
+      if (!result.error && result.data) {
+        const responseData = result.data as CreateBanResponse;
+        
+        // If the response includes the created ban
+        if (responseData.ban) {
+          // Add the new ban to the local state
+          setBans(prevBans => [responseData.ban!, ...prevBans]);
+          
+          // Update statistics
+          if (banStats) {
+            setBanStats(prevStats => ({
+              ...prevStats,
+              totalBans: prevStats.totalBans + 1,
+              totalBansToday: prevStats.totalBansToday + 1,
+              totalBansMonth: prevStats.totalBansMonth + 1
+            }));
+          }
+        }
+        
+        // Quietly refresh the data in the background to ensure consistency
+        setTimeout(() => {
+          Promise.all([
+            repository.getBans(true).then(result => {
+              if (!result.error) {
+                setBans(result.bans);
+              }
+            }),
+            repository.getBanStatistics(true).then(result => {
+              if (!result.error) {
+                setBanStats(result.stats);
+              }
+            })
+          ]);
+        }, 2000);
       }
+      
       return result;
     } catch (err) {
       console.error('Error in useBanRepository.createBan:', err);
       throw err;
     }
-  }, [repository, fetchBans, fetchBanStatistics]);
+  }, [repository, banStats]);
 
   const updateBan = useCallback(async (banId: number, updateData: any) => {
     try {
+      // Make the API call to update the ban
       const result = await repository.updateBan(banId, updateData);
+      
       if (!result.error) {
-        // Refresh bans after update
-        await fetchBans(true);
+        // Update the local state directly instead of refetching all bans
+        setBans(prevBans => 
+          prevBans.map(ban => 
+            ban.banId === banId 
+              ? { 
+                  ...ban, 
+                  ...updateData, 
+                  // Ensure we don't lose any fields that weren't updated
+                  reason: updateData.reason !== undefined ? updateData.reason : ban.reason,
+                  capturedMessage: updateData.capturedMessage !== undefined 
+                    ? updateData.capturedMessage 
+                    : ban.capturedMessage
+                } 
+              : ban
+          )
+        );
+        
+        // Quietly refresh the data in the background to ensure consistency
+        // but don't wait for it or show loading indicators
+        setTimeout(() => {
+          repository.getBans(true).then(result => {
+            if (!result.error) {
+              setBans(result.bans);
+            }
+          });
+        }, 2000);
       }
+      
       return result;
     } catch (err) {
       console.error('Error in useBanRepository.updateBan:', err);
       throw err;
     }
-  }, [repository, fetchBans]);
+  }, [repository]);
 
   const deleteBan = useCallback(async (banId: number) => {
     try {
       const result = await repository.deleteBan(banId);
+      
       if (!result.error) {
-        // Refresh bans and statistics after deletion
-        await Promise.all([
-          fetchBans(true),
-          fetchBanStatistics(true)
-        ]);
+        // Update local state directly by filtering out the deleted ban
+        setBans(prevBans => prevBans.filter(ban => ban.banId !== banId));
+        
+        // Update statistics if needed
+        if (banStats) {
+          setBanStats(prevStats => ({
+            ...prevStats,
+            totalBans: Math.max(0, prevStats.totalBans - 1),
+            // We can't be sure if the ban was from today or this month, so refresh those stats
+          }));
+        }
+        
+        // Quietly refresh the statistics to get accurate data
+        fetchBanStatistics(true);
+        
+        // Quietly refresh the data in the background to ensure consistency
+        setTimeout(() => {
+          repository.getBans(true).then(result => {
+            if (!result.error) {
+              setBans(result.bans);
+            }
+          });
+        }, 2000);
       }
+      
       return result;
     } catch (err) {
       console.error('Error in useBanRepository.deleteBan:', err);
       throw err;
     }
-  }, [repository, fetchBans, fetchBanStatistics]);
+  }, [repository, fetchBanStatistics, banStats]);
 
   // Initial data loading effect
   useEffect(() => {
@@ -108,4 +191,4 @@ export function useBanRepository() {
     updateBan,
     deleteBan
   };
-} 
+}
