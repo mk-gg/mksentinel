@@ -43,41 +43,40 @@
   }
 
   .dark {
-    /* Tokyo Night Theme colors */
-    --background: 225 27% 15%;           /* #1a1b26 - Tokyo Night background */
-    --foreground: 216 16% 76%;           /* #a9b1d6 - Tokyo Night foreground */
+    --background: 223 84% 5%;
+    --foreground: 210 40% 98%;
 
-    --card: 230 16% 19%;                 /* #24283b - Tokyo Night card / block */
-    --card-foreground: 216 16% 76%;      /* #a9b1d6 - Tokyo Night foreground */
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 230 16% 19%;              /* #24283b - Tokyo Night card / block */
-    --popover-foreground: 216 16% 76%;   /* #a9b1d6 - Tokyo Night foreground */
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 207 93% 71%;              /* #7aa2f7 - Tokyo Night blue */
-    --primary-foreground: 225 27% 15%;   /* #1a1b26 - Tokyo Night background */
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 235 23% 26%;            /* #292e42 - Tokyo Night selection */
-    --secondary-foreground: 216 16% 76%; /* #a9b1d6 - Tokyo Night foreground */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 235 23% 26%;                /* #292e42 - Tokyo Night selection */
-    --muted-foreground: 233 11% 52%;     /* #565f89 - Tokyo Night comments */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 235 23% 26%;               /* #292e42 - Tokyo Night selection */
-    --accent-foreground: 216 16% 76%;    /* #a9b1d6 - Tokyo Night foreground */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 344 84% 66%;          /* #f7768e - Tokyo Night red */
-    --destructive-foreground: 220 13% 91%; /* #e0def4 - Tokyo Night background lighter */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 233 14% 28%;               /* #353b45 - Tokyo Night borders */
-    --input: 233 14% 28%;                /* #353b45 - Tokyo Night borders */
-    --ring: 207 93% 71%;                 /* #7aa2f7 - Tokyo Night blue */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
     
-    /* Chart colors for Tokyo Night theme */
-    --chart-primary: 207 93% 71%;        /* #7aa2f7 - Tokyo Night blue */
-    --chart-secondary: 239 82% 67%;      /* #bb9af7 - Tokyo Night purple */
-    --chart-success: 115 54% 65%;        /* #9ece6a - Tokyo Night green */
-    --chart-warning: 34 91% 74%;         /* #e0af68 - Tokyo Night orange */
-    --chart-danger: 344 84% 66%;         /* #f7768e - Tokyo Night red */
+    /* Chart colors for dark mode */
+    --chart-primary: 213.1 93.9% 67.8%;    /* #60a5fa - Lighter Blue */
+    --chart-secondary: 263.4 70% 71.4%;    /* #a78bfa - Lighter Purple */
+    --chart-success: 142.4 70.6% 45.3%;    /* #34d399 - Lighter Green */
+    --chart-warning: 36 100% 65%;          /* #fbbf24 - Lighter Amber */
+    --chart-danger: 0 91.2% 71.4%;         /* #f87171 - Lighter Red */
   }
 }
 
@@ -89,3 +88,4 @@
     @apply bg-background text-foreground;
   }
 }
+
