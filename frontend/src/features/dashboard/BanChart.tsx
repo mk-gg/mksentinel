@@ -173,7 +173,7 @@ export const BanChart = () => {
             config={{
               count: {
                 label: "Bans",
-                color: "hsl(var(--primary))",
+                color: "hsl(var(--chart-primary))",
               },
             }}
             className="w-full h-full"
@@ -185,8 +185,8 @@ export const BanChart = () => {
               >
                 <defs>
                   <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="hsl(var(--chart-primary))" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="hsl(var(--chart-primary))" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
@@ -208,7 +208,7 @@ export const BanChart = () => {
                 <Area 
                   type="monotone" 
                   dataKey="count" 
-                  stroke="hsl(var(--primary))" 
+                  stroke="hsl(var(--chart-primary))" 
                   strokeWidth={2}
                   fillOpacity={1} 
                   fill="url(#colorCount)" 
