@@ -3,6 +3,7 @@ import { LoginPage } from "./features/login/LoginPage"
 import { HomePage } from "./pages/HomePage"
 import { Bans } from "./features/bans/Bans"
 import { AuthProvider, useAuth } from "./contexts/AuthContext"
+import { ThemeProvider } from "./contexts/ThemeContext"
 import { useEffect } from "react"
 import { BanRepository } from "./repositories/banRepository"
 
@@ -62,13 +63,16 @@ function InitialDataPrefetcher() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <InitialDataPrefetcher />
-        <PrefetchRouteData />
-        <AppRoutes />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <InitialDataPrefetcher />
+          <PrefetchRouteData />
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
+    
   )
 }
 
