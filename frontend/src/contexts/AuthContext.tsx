@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null
   loading: boolean
   login: () => void
+  loginWithGithub: () => void
   logout: () => Promise<{ success: boolean, error?: string }>
   refreshUser: (forceRefresh?: boolean) => Promise<void>
 }
@@ -17,7 +18,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { 
     user, 
     loading, 
-    login, 
+    login,
+    loginWithGithub, 
     logout,
     fetchCurrentUser 
   } = useAuthRepository()
@@ -26,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     loading,
     login,
+    loginWithGithub,
     logout,
     refreshUser: fetchCurrentUser
   }

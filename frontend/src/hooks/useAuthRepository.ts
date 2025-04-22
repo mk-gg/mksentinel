@@ -29,6 +29,10 @@ export function useAuthRepository() {
     repository.redirectToGoogleAuth();
   }, [repository]);
 
+  const loginWithGithub = useCallback(() => {
+    repository.redirectToGithubAuth();
+  }, [repository]);
+
   const logout = useCallback(async () => {
     try {
       const result = await repository.logout();
@@ -55,6 +59,7 @@ export function useAuthRepository() {
     loading,
     error,
     login,
+    loginWithGithub,
     logout,
     fetchCurrentUser
   };

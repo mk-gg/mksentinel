@@ -74,6 +74,11 @@ export class AuthRepository {
     // Using the imported BASE_URL directly instead of require
     window.location.href = `${BASE_URL}/authorize/google`;
   }
+
+  // Helper method to start Github OAuth flow
+  redirectToGithubAuth() {
+    window.location.href = `${BASE_URL}/authorize/github`;
+  }
   
   // Invalidate user cache
   invalidateCache() {
