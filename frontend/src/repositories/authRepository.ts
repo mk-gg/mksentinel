@@ -1,4 +1,5 @@
 import { ApiService } from '@/services/api';
+import { BASE_URL } from '@/config/api';
 
 export interface User {
   id: number;
@@ -70,7 +71,7 @@ export class AuthRepository {
   
   // Helper method to start Google OAuth flow
   redirectToGoogleAuth() {
-    const { BASE_URL } = require('@/config/api');
+    // Using the imported BASE_URL directly instead of require
     window.location.href = `${BASE_URL}/authorize/google`;
   }
   
