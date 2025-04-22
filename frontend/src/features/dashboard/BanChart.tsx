@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseISO, subDays, subMonths, isAfter } from "date-fns"
@@ -148,8 +148,8 @@ export const BanChart = () => {
     <Card className="w-full">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-4">
         <div>
-          <CardTitle>Bans per Day</CardTitle>
-          <CardDescription>Number of bans issued each day</CardDescription>
+          <CardTitle>Bans Trend</CardTitle>
+          <CardDescription>Ban activity over time</CardDescription>
         </div>
         <div className="flex items-center">
           <span className="text-sm text-muted-foreground mr-2">Time range:</span>
@@ -179,10 +179,16 @@ export const BanChart = () => {
             className="w-full h-full"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart 
+              <AreaChart 
                 data={chartData} 
                 margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
               >
+                <defs>
+                  <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
                 <XAxis 
                   dataKey="date" 
                   tickLine={false} 
@@ -199,13 +205,15 @@ export const BanChart = () => {
                   width={40}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar 
+                <Area 
+                  type="monotone" 
                   dataKey="count" 
-                  fill="hsl(var(--primary))" 
-                  radius={[4, 4, 0, 0]} 
-                  maxBarSize={50} 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  fillOpacity={1} 
+                  fill="url(#colorCount)" 
                 />
-              </BarChart>
+              </AreaChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
