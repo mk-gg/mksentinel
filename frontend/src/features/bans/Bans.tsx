@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback } from "react"
+import { useState, useCallback } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { useAuth } from "@/contexts/AuthContext"
 import { useToast } from "@/hooks/use-toast"
-import { BASE_URL } from "@/config/api"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AdminActions } from "@/features/bans/AdminActions"
 import { DataTable } from "@/features/bans/DataTable"
@@ -13,54 +12,18 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { compareDesc } from "date-fns"
-
-interface Ban {
-  banId: number
-  capturedMessage: string
-  createdAt: string
-  memberId: string
-  reason: string
-  serverId: string
-}
+import { useBanRepository } from "@/hooks/useBanRepository"
 
 export function Bans() {
-  const [bans, setBans] = useState<Ban[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const { toast } = useToast()
   const { user } = useAuth()
+  const { bans, loading, error, updateBan, deleteBan, fetchBans } = useBanRepository()
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingBanId, setEditingBanId] = useState<number | null>(null)
   const [editReason, setEditReason] = useState("")
   const [editCapturedMessage, setEditCapturedMessage] = useState("")
-
-  const fetchBans = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/api/bans`, {
-        credentials: "include",
-      })
-      if (!response.ok) {
-        throw new Error("Failed to fetch ban data")
-      }
-      const data = await response.json()
-      setBans(data.bans)
-    } catch (err) {
-      setError("Failed to load ban data")
-      toast({
-        title: "Error",
-        description: "Failed to load ban data",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchBans()
-  }, [])
 
   const filteredBans = bans.filter(
     (ban) =>
@@ -73,26 +36,20 @@ export function Bans() {
   const handleEdit = useCallback(
     async (banId: number) => {
       try {
-        const response = await fetch(`${BASE_URL}/api/ban/${banId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ reason: editReason, capturedMessage: editCapturedMessage }),
-          credentials: "include",
+        const response = await updateBan(banId, { 
+          reason: editReason, 
+          capturedMessage: editCapturedMessage 
         })
 
-        if (!response.ok) {
-          throw new Error("Failed to update ban")
+        if (response.error) {
+          throw new Error(response.error)
         }
 
-        const data = await response.json()
         toast({
           title: "Ban Updated",
-          description: data.message,
+          description: "Ban was successfully updated",
         })
         setIsEditDialogOpen(false)
-        fetchBans() // Refresh the ban list
       } catch (error) {
         toast({
           title: "Error",
@@ -101,27 +58,22 @@ export function Bans() {
         })
       }
     },
-    [editReason, editCapturedMessage, toast, fetchBans]
+    [editReason, editCapturedMessage, toast, updateBan]
   )
 
   const handleDelete = useCallback(
     async (banId: number) => {
       try {
-        const response = await fetch(`${BASE_URL}/api/ban/${banId}`, {
-          method: "DELETE",
-          credentials: "include",
-        })
+        const response = await deleteBan(banId)
 
-        if (!response.ok) {
-          throw new Error("Failed to delete ban")
+        if (response.error) {
+          throw new Error(response.error)
         }
 
-        const data = await response.json()
         toast({
           title: "Ban Deleted",
-          description: data.message,
+          description: "Ban was successfully deleted",
         })
-        fetchBans() // Refresh the ban list
       } catch (error) {
         toast({
           title: "Error",
@@ -130,7 +82,7 @@ export function Bans() {
         })
       }
     },
-    [toast, fetchBans]
+    [toast, deleteBan]
   )
 
   const handleEditClick = (banId: number, reason: string, capturedMessage: string) => {
@@ -163,7 +115,22 @@ export function Bans() {
   }
 
   if (error) {
-    return <div>{error}</div>
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+          <Card className="w-full">
+            <CardContent className="py-8">
+              <div className="text-red-500 text-center">Error loading bans: {error}</div>
+              <div className="flex justify-center mt-4">
+                <Button onClick={() => fetchBans(true)}>Retry</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    )
   }
   
   return (
@@ -184,7 +151,7 @@ export function Bans() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="max-w-sm"
                 />
-                {user?.is_admin && <AdminActions onBanAdded={fetchBans} />}
+                {user?.is_admin && <AdminActions onBanAdded={() => fetchBans(true)} />}
               </div>
               <DataTable
                 bans={filteredBans}
@@ -235,4 +202,4 @@ export function Bans() {
       </div>
     </>
   )
-} 
+}

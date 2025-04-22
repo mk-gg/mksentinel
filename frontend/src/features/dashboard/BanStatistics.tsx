@@ -1,41 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import { BASE_URL } from '@/config/api'
 import { Skeleton } from '@/components/ui/skeleton'
-
-interface BanStats {
-    totalBans: number
-    totalBansToday: number
-    totalBansMonth: number
-}
-
+import { useBanRepository } from '@/hooks/useBanRepository'
 
 export function BanStatistics() {
-    const [stats, setStats] = useState<BanStats>({ totalBans: 0, totalBansToday: 0, totalBansMonth: 0 })
-    const [loading, setLoading] = useState(true)
+    const { banStats, loading, error, fetchBanStatistics } = useBanRepository()
 
     useEffect(() => {
-        const fetchStats = async () => {
-          try {
-            const response = await fetch(`${BASE_URL}/api/bans/statistics`, {
-              credentials: 'include'
-            })
-            if (!response.ok) {
-              throw new Error('Failed to fetch ban statistics')
-            }
-            const data = await response.json()
-            setStats(data)
-          } catch (error) {
-            console.error('Error fetching ban statistics:', error)
-          } finally {
-            setLoading(false)
-          }
-        }
-    
-        fetchStats()
-      }, [])
+        fetchBanStatistics()
+    }, [fetchBanStatistics])
 
-      if (loading) {
+    if (loading) {
         return (
           <div className="grid gap-4 md:grid-cols-3">
             {[...Array(3)].map((_, index) => (
@@ -50,7 +25,19 @@ export function BanStatistics() {
             ))}
           </div>
         )
-      }
+    }
+
+    if (error) {
+        return (
+            <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                    <CardContent className="py-4">
+                        <div className="text-red-500">Error loading statistics: {error}</div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
 
     return (
         <div className="grid gap-4 md:grid-cols-3">
@@ -59,7 +46,7 @@ export function BanStatistics() {
                     <CardTitle className="text-sm font-medium">Total Bans</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalBans}</div>
+                    <div className="text-2xl font-bold">{banStats.totalBans}</div>
                 </CardContent>
             </Card>
             <Card>
@@ -67,7 +54,7 @@ export function BanStatistics() {
                     <CardTitle className="text-sm font-medium">Bans Today</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalBansToday}</div>
+                    <div className="text-2xl font-bold">{banStats.totalBansToday}</div>
                 </CardContent>
             </Card>
             <Card>
@@ -75,9 +62,9 @@ export function BanStatistics() {
                     <CardTitle className="text-sm font-medium">Monthly Bans</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalBansMonth}</div>
+                    <div className="text-2xl font-bold">{banStats.totalBansMonth}</div>
                 </CardContent>
             </Card>
         </div>
     )
-} 
+}

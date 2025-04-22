@@ -3,18 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
-import { BASE_URL } from "@/config/api"
 import { parseISO, subDays, subMonths, isAfter } from "date-fns"
 import { formatInTimeZone } from "date-fns-tz"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-interface Ban {
-  banId: number
-  createdAt: string
-  memberId: string
-  reason: string
-  serverId: number
-}
+import { useBanRepository } from "@/hooks/useBanRepository"
+import { Button } from "@/components/ui/button"
 
 interface ChartData {
   date: string
@@ -25,78 +18,60 @@ interface ChartData {
 type TimeRange = '7days' | '30days' | '3months' | '6months' | 'all'
 
 export const BanChart = () => {
+  const { bans, loading, error, fetchBans } = useBanRepository()
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [allBansData, setAllBansData] = useState<ChartData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [timeRange, setTimeRange] = useState<TimeRange>('30days')
 
+  // Process bans data when it changes
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/bans`, {
-          credentials: "include",
-        })
-        if (!response.ok) {
-          throw new Error("Failed to fetch ban data")
+    if (!loading && bans.length > 0) {
+      // Create a map to store ban counts by date
+      const banCountsByDate = new Map<string, number>()
+
+      // Process each ban and count by formatted date in UTC
+      bans.forEach((ban) => {
+        try {
+          if (!ban.createdAt) {
+            console.warn("Ban missing createdAt:", ban)
+            return
+          }
+          
+          // Parse the ISO date string
+          const parsedDate = parseISO(ban.createdAt)
+          // Format in UTC
+          const formattedDate = formatInTimeZone(parsedDate, 'UTC', 'dd/MM/yyyy')
+          
+          banCountsByDate.set(formattedDate, (banCountsByDate.get(formattedDate) || 0) + 1)
+        } catch (err) {
+          console.error("Error processing ban date:", ban.createdAt, err)
         }
-        const data = await response.json()
-        const bans: Ban[] = data.bans
+      })
 
-        // Create a map to store ban counts by date
-        const banCountsByDate = new Map<string, number>()
-
-        // Process each ban and count by formatted date in UTC
-        bans.forEach((ban) => {
+      // Convert the map to array and sort by date
+      const formattedData: ChartData[] = Array.from(banCountsByDate.entries())
+        .map(([date, count]) => {
           try {
-            if (!ban.createdAt) {
-              console.warn("Ban missing createdAt:", ban)
-              return
+            return {
+              date: date.slice(0, 5), // Just take dd/MM part
+              count,
+              originalDate: parseISO(date.split('/').reverse().join('-'))
             }
-            
-            // Parse the ISO date string
-            const parsedDate = parseISO(ban.createdAt)
-            // Format in UTC
-            const formattedDate = formatInTimeZone(parsedDate, 'UTC', 'dd/MM/yyyy')
-            
-            banCountsByDate.set(formattedDate, (banCountsByDate.get(formattedDate) || 0) + 1)
           } catch (err) {
-            console.error("Error processing ban date:", ban.createdAt, err)
+            console.error("Error formatting date:", date, err)
+            return null
           }
         })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .sort((a, b) => a.originalDate!.getTime() - b.originalDate!.getTime())
 
-        // Convert the map to array and sort by date
-        const formattedData: ChartData[] = Array.from(banCountsByDate.entries())
-          .map(([date, count]) => {
-            try {
-              return {
-                date: date.slice(0, 5), // Just take dd/MM part
-                count,
-                originalDate: parseISO(date.split('/').reverse().join('-'))
-              }
-            } catch (err) {
-              console.error("Error formatting date:", date, err)
-              return null
-            }
-          })
-          .filter((item): item is NonNullable<typeof item> => item !== null)
-          .sort((a, b) => a.originalDate!.getTime() - b.originalDate!.getTime())
-
-        // Store the full data set
-        setAllBansData(formattedData)
-        
-        // Apply the initial time filter
-        filterDataByTimeRange(formattedData, timeRange)
-      } catch (err) {
-        console.error('Error fetching ban data:', err)
-        setError("Failed to load ban data")
-      } finally {
-        setLoading(false)
-      }
+      // Store the full data set
+      setAllBansData(formattedData)
+      
+      // Apply the time filter
+      filterDataByTimeRange(formattedData, timeRange)
     }
-
-    fetchData()
-  }, [])
+  }, [bans, loading, timeRange])
 
   useEffect(() => {
     // Apply time range filter whenever it changes
@@ -157,15 +132,20 @@ export const BanChart = () => {
 
   if (error) {
     return (
-      <Card className="w-full h-[300px] flex items-center justify-center">
-        <CardContent>{error}</CardContent>
+      <Card className="w-full">
+        <CardContent className="py-8">
+          <div className="text-red-500 text-center">Error loading ban data: {error}</div>
+          <div className="flex justify-center mt-4">
+            <Button onClick={() => fetchBans(true)}>Retry</Button>
+          </div>
+        </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className="w-full h-[600px]">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+    <Card className="w-full min-h-[400px] h-auto lg:h-[600px]">
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-2 space-y-2 sm:space-y-0">
         <div>
           <CardTitle>Bans per Day</CardTitle>
           <CardDescription>Number of bans issued each day</CardDescription>
@@ -194,22 +174,24 @@ export const BanChart = () => {
               color: "hsl(var(--primary))",
             },
           }}
-          className="h-full"
+          className="h-[300px] sm:h-[350px] lg:h-[500px]"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 5, bottom: 5 }}>
               <XAxis 
                 dataKey="date" 
                 tickLine={false} 
                 axisLine={false} 
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 10, dy: 5 }}
+                interval="preserveStartEnd"
+                minTickGap={5}
               />
               <YAxis
                 tickLine={false}
                 axisLine={false}
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 10 }}
                 tickFormatter={(value) => Math.round(value).toString()}
-                interval={0}
+                width={30}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar 

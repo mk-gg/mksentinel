@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { BASE_URL } from '@/config/api'
+import { useBanRepository } from "@/hooks/useBanRepository"
 
 interface NewBan {
   memberId: string
@@ -32,6 +32,7 @@ export const AdminActions: React.FC<AdminActionsProps> = ({ onBanAdded }) => {
     reason: ''
   })
   const { toast } = useToast()
+  const { createBan } = useBanRepository()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -41,16 +42,9 @@ export const AdminActions: React.FC<AdminActionsProps> = ({ onBanAdded }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch(`${BASE_URL}/api/ban`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newBan),
-        credentials: 'include'
-      })
+      const response = await createBan(newBan)
 
-      if (response.ok) {
+      if (!response.error) {
         toast({
           title: "Ban Added",
           description: `Successfully banned user ${newBan.username}`,
@@ -58,8 +52,7 @@ export const AdminActions: React.FC<AdminActionsProps> = ({ onBanAdded }) => {
         setIsDialogOpen(false)
         onBanAdded()
       } else {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to add ban')
+        throw new Error(response.error)
       }
     } catch (error) {
       toast({
@@ -115,4 +108,4 @@ export const AdminActions: React.FC<AdminActionsProps> = ({ onBanAdded }) => {
       </DialogContent>
     </Dialog>
   )
-} 
+}
