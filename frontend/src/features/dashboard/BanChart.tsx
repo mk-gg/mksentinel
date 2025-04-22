@@ -145,8 +145,8 @@ export const BanChart = () => {
   }
 
   return (
-    <Card className="w-full min-h-[400px] h-auto lg:h-[600px]">
-      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-2 space-y-2 sm:space-y-0">
+    <Card className="w-full">
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-4">
         <div>
           <CardTitle>Bans per Day</CardTitle>
           <CardDescription>Number of bans issued each day</CardDescription>
@@ -167,43 +167,48 @@ export const BanChart = () => {
           </Select>
         </div>
       </CardHeader>
-      <CardContent className="flex-1">
-        <ChartContainer
-          config={{
-            count: {
-              label: "Bans",
-              color: "hsl(var(--primary))",
-            },
-          }}
-          className="h-[300px] sm:h-[350px] lg:h-[500px]"
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 5, bottom: 5 }}>
-              <XAxis 
-                dataKey="date" 
-                tickLine={false} 
-                axisLine={false} 
-                tick={{ fontSize: 10, dy: 5 }}
-                interval="preserveStartEnd"
-                minTickGap={5}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 10 }}
-                tickFormatter={(value) => Math.round(value).toString()}
-                width={30}
-              />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar 
-                dataKey="count" 
-                fill="hsl(var(--primary))" 
-                radius={[4, 4, 0, 0]} 
-                maxBarSize={50} 
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+      <CardContent>
+        <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
+          <ChartContainer
+            config={{
+              count: {
+                label: "Bans",
+                color: "hsl(var(--primary))",
+              },
+            }}
+            className="w-full h-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart 
+                data={chartData} 
+                margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
+              >
+                <XAxis 
+                  dataKey="date" 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tick={{ fontSize: 12, dy: 10 }}
+                  interval="preserveStartEnd"
+                  minTickGap={10}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(value) => Math.round(value).toString()}
+                  width={40}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar 
+                  dataKey="count" 
+                  fill="hsl(var(--primary))" 
+                  radius={[4, 4, 0, 0]} 
+                  maxBarSize={50} 
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
     </Card>
   )
