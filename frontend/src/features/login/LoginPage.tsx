@@ -28,9 +28,9 @@ export function LoginPage() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              <span className="w-full border-t border-gray-300 dark:border-gray-600"></span>
             </div>
-            <div className="relative flex justfiy-center text-sm">
+            <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-card text-muted-foreground">Or continue with</span>
             </div>
           </div>
