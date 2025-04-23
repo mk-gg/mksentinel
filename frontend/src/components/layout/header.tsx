@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { useTheme } from "@/contexts/ThemeContext"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Moon, Sun } from "lucide-react"
+import { ConnectionStatusBadge } from "@/components/ui/connection-status-badge"
 
 interface HeaderProps {
   showSkeleton?: boolean;
@@ -55,6 +56,7 @@ export function Header({ showSkeleton = false }: HeaderProps) {
           <Button variant="ghost" asChild>
             <Link to="/bans">Bans</Link>
           </Button>
+          <ConnectionStatusBadge />
           <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
@@ -82,4 +84,4 @@ export function Header({ showSkeleton = false }: HeaderProps) {
       </div>
     </header>
   )
-} 
+}

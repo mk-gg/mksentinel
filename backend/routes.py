@@ -11,6 +11,8 @@ from sqlalchemy import func
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
+from pusher_service import trigger_server_status
+
 
 
 def init_routes(app):
@@ -376,6 +378,14 @@ def init_routes(app):
         except Exception as e:
             return jsonify({'error': str(e)}), 400
     
+
+
+
+    @app.route('/api/status', methods=['GET'])
+    def server_status():
+        """API endpoint to check server status and trigger a Pusher event"""
+        trigger_server_status()
+        return jsonify({'status': 'online'})
 
     # Handles the routes for static files
     # @app.route('/', defaults={'path': ''})
