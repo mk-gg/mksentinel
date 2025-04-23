@@ -16,6 +16,7 @@ import psycopg2
 
 
 
+
 def init_routes(app):
     @app.route('/')
     @app.route('/bans')
@@ -388,7 +389,7 @@ def init_routes(app):
         trigger_server_status()
         return jsonify({'status': 'online'})
     
-    # Add this to your routes.py
+
     @app.route('/api/healthcheck', methods=['GET'])
     def health_check():
         """API endpoint to check system health and trigger a Pusher event"""
@@ -396,7 +397,7 @@ def init_routes(app):
         # Initialize health data
         health_data = {
             'status': 'healthy',
-            'timestamp': datetime.datetime.now().isoformat(),
+            'timestamp': datetime.now().isoformat(),  # Use datetime.now() directly
             'components': {
                 'server': 'connected',
                 'database': 'connected',
@@ -415,7 +416,6 @@ def init_routes(app):
             print(f"Database health check failed: {e}")
             health_data['components']['database'] = 'disconnected'
             health_data['status'] = 'degraded'
-
         
         # Determine overall status based on component statuses
         if any(status == 'disconnected' for status in health_data['components'].values()):
@@ -428,7 +428,7 @@ def init_routes(app):
         trigger_event('sentinel-status', 'health-update', health_data)
         
         return jsonify(health_data)
-
+    
     # Handles the routes for static files
     # @app.route('/', defaults={'path': ''})
     # @app.route('/<path:path>')
