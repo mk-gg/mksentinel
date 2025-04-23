@@ -62,6 +62,11 @@ def create_app():
     app.config['API_KEY_SENTINEL'] = os.environ.get('API_KEY_SENTINEL')
     app.config['SENTINEL_SECRET'] = os.environ.get('SENTINEL_SECRET')
     
+    app.config['PUSHER_APP_ID'] = os.environ.get('PUSHER_APP_ID')
+    app.config['PUSHER_KEY'] = os.environ.get('PUSHER_KEY')
+    app.config['PUSHER_SECRET'] = os.environ.get('PUSHER_SECRET')
+    app.config['PUSHER_CLUSTER'] = os.environ.get('PUSHER_CLUSTER') 
+
     # Security configurations
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
