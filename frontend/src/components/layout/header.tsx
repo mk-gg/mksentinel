@@ -56,7 +56,8 @@ export function Header({ showSkeleton = false }: HeaderProps) {
           <Button variant="ghost" asChild>
             <Link to="/bans">Bans</Link>
           </Button>
-          <ConnectionStatusBadge />
+          {/* Use popover mode for desktop and tooltip for mobile/touch devices */}
+          <ConnectionStatusBadge mode="popover" />
           <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">

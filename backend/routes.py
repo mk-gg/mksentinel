@@ -11,7 +11,8 @@ from sqlalchemy import func
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
-from pusher_service import trigger_server_status
+from pusher_service import trigger_server_status, trigger_event
+import psycopg2
 
 
 
@@ -386,6 +387,47 @@ def init_routes(app):
         """API endpoint to check server status and trigger a Pusher event"""
         trigger_server_status()
         return jsonify({'status': 'online'})
+    
+    # Add this to your routes.py
+    @app.route('/api/healthcheck', methods=['GET'])
+    def health_check():
+        """API endpoint to check system health and trigger a Pusher event"""
+        
+        # Initialize health data
+        health_data = {
+            'status': 'healthy',
+            'timestamp': datetime.datetime.now().isoformat(),
+            'components': {
+                'server': 'connected',
+                'database': 'connected',
+                # Add other components as needed
+            }
+        }
+        
+        # Check database connection
+        try:
+            # Use your existing database connection method
+            with db.engine.connect() as connection:
+                # Simple query to test connection
+                connection.execute("SELECT 1")
+            health_data['components']['database'] = 'connected'
+        except Exception as e:
+            print(f"Database health check failed: {e}")
+            health_data['components']['database'] = 'disconnected'
+            health_data['status'] = 'degraded'
+
+        
+        # Determine overall status based on component statuses
+        if any(status == 'disconnected' for status in health_data['components'].values()):
+            health_data['status'] = 'degraded'
+            
+        if all(status == 'disconnected' for status in health_data['components'].values()):
+            health_data['status'] = 'unhealthy'
+        
+        # Trigger a Pusher event with the health status
+        trigger_event('sentinel-status', 'health-update', health_data)
+        
+        return jsonify(health_data)
 
     # Handles the routes for static files
     # @app.route('/', defaults={'path': ''})
