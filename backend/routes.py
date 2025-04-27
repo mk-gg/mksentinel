@@ -6,7 +6,7 @@ import requests
 from urllib.parse import urlencode
 from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import func
+from sqlalchemy import func, text
 
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
@@ -407,11 +407,12 @@ def init_routes(app):
         
         # Check database connection
         try:
-            # Use your existing database connection method
+            # Use SQLAlchemy 2.0 compatible syntax
             with db.engine.connect() as connection:
-                # Simple query to test connection
-                connection.execute("SELECT 1")
-            health_data['components']['database'] = 'connected'
+                # Execute a simple query using proper syntax for SQLAlchemy 2.0
+                connection.execute(text("SELECT 1")).scalar()
+                # If we get here, the database is connected
+                health_data['components']['database'] = 'connected'
         except Exception as e:
             print(f"Database health check failed: {e}")
             health_data['components']['database'] = 'disconnected'
