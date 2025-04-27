@@ -28,8 +28,8 @@ def create_app():
     })
 
     # Configuration
-    app.config['SECRET_KEY'] = 'top secret!'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.cpeyxarnnshkhhjfffsp:VOoLSxZeDkFRymUs@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'top secret!')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///dev.db') 
     app.config['OAUTH2_PROVIDERS'] = {
         # Google OAuth Provider
         'google': {
