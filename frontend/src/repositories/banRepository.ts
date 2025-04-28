@@ -13,6 +13,11 @@ export interface BanStatistics {
   totalBans: number;
   totalBansToday: number;
   totalBansMonth: number;
+  totalBansYear: number;
+  totalServers: number;
+  totalMembers: number;
+  monthlyTrend: any[];
+  currentServerTime: string;
 }
 
 interface BansResponse {
@@ -26,6 +31,7 @@ export class BanRepository {
   private lastBansFetch: number = 0;
   private lastStatsFetch: number = 0;
   private cacheExpiration = 5 * 60 * 1000; // 5 minutes
+  private statsCacheExpiration = 1 * 60 * 1000; // 1 minute for stats
   
   // Singleton pattern
   static getInstance(): BanRepository {
@@ -44,43 +50,68 @@ export class BanRepository {
       return { bans: this.cachedBans };
     }
     
-    // Fetch fresh data
-    const response = await ApiService.getBans<BansResponse>();
-    
-    if (response.error) {
-      return { bans: this.cachedBans || [], error: response.error };
+    try {
+      // Fetch fresh data
+      const response = await ApiService.getBans<BansResponse>();
+      
+      if (response.error) {
+        return { bans: this.cachedBans || [], error: response.error };
+      }
+      
+      // Update cache
+      this.cachedBans = response.data.bans;
+      this.lastBansFetch = Date.now();
+      
+      return { bans: this.cachedBans };
+    } catch (error) {
+      console.error('Error fetching bans:', error);
+      return { 
+        bans: this.cachedBans || [], 
+        error: error instanceof Error ? error.message : 'Failed to fetch bans' 
+      };
     }
-    
-    // Update cache
-    this.cachedBans = response.data.bans;
-    this.lastBansFetch = Date.now();
-    
-    return { bans: this.cachedBans || [] };
   }
   
   // Get ban statistics with cache
   async getBanStatistics(forceRefresh = false): Promise<{ stats: BanStatistics, error?: string }> {
-    const defaultStats: BanStatistics = { totalBans: 0, totalBansToday: 0, totalBansMonth: 0 };
+    const defaultStats: BanStatistics = { 
+      totalBans: 0, 
+      totalBansToday: 0, 
+      totalBansMonth: 0,
+      totalBansYear: 0,
+      totalServers: 0,
+      totalMembers: 0,
+      monthlyTrend: [],
+      currentServerTime: new Date().toISOString()
+    };
     
     // Return cached data if valid and not forcing refresh
     if (!forceRefresh && 
         this.cachedStats && 
-        (Date.now() - this.lastStatsFetch < this.cacheExpiration)) {
+        (Date.now() - this.lastStatsFetch < this.statsCacheExpiration)) {
       return { stats: this.cachedStats };
     }
     
-    // Fetch fresh data
-    const response = await ApiService.getBanStatistics<BanStatistics>();
-    
-    if (response.error) {
-      return { stats: this.cachedStats || defaultStats, error: response.error };
+    try {
+      // Fetch fresh data
+      const response = await ApiService.getBanStatistics<BanStatistics>();
+      
+      if (response.error) {
+        return { stats: this.cachedStats || defaultStats, error: response.error };
+      }
+      
+      // Update cache
+      this.cachedStats = response.data;
+      this.lastStatsFetch = Date.now();
+      
+      return { stats: this.cachedStats };
+    } catch (error) {
+      console.error('Error fetching ban statistics:', error);
+      return { 
+        stats: this.cachedStats || defaultStats, 
+        error: error instanceof Error ? error.message : 'Failed to fetch statistics' 
+      };
     }
-    
-    // Update cache
-    this.cachedStats = response.data;
-    this.lastStatsFetch = Date.now();
-    
-    return { stats: this.cachedStats || defaultStats };
   }
   
   // Create a new ban
@@ -117,5 +148,16 @@ export class BanRepository {
   invalidateCache() {
     this.cachedBans = null;
     this.cachedStats = null;
+  }
+
+  // Clear cache methods
+  clearBansCache(): void {
+    this.cachedBans = null;
+    this.lastBansFetch = 0;
+  }
+
+  clearStatsCache(): void {
+    this.cachedStats = null;
+    this.lastStatsFetch = 0;
   }
 } 

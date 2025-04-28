@@ -337,28 +337,17 @@ def init_routes(app):
             start_of_month = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             start_of_year = current_date.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
             
-            # Get total bans
-            total_bans = db.session.query(func.count(Bans.ban_id)).scalar()
+            # Combine multiple queries into a single query for better performance
+            stats = db.session.query(
+                func.count(Bans.ban_id).label('total_bans'),
+                func.count(case((Bans.created_at >= start_of_today, 1))).label('total_bans_today'),
+                func.count(case((Bans.created_at >= start_of_month, 1))).label('total_bans_month'),
+                func.count(case((Bans.created_at >= start_of_year, 1))).label('total_bans_year'),
+                func.count(func.distinct(Bans.server_id)).label('total_servers'),
+                func.count(func.distinct(Bans.member_id)).label('total_members')
+            ).first()
             
-            # Get total bans today using UTC comparison
-            total_bans_today = db.session.query(func.count(Bans.ban_id))\
-                .filter(Bans.created_at >= start_of_today).scalar()
-                    
-            # Get total bans this month
-            total_bans_month = db.session.query(func.count(Bans.ban_id))\
-                .filter(Bans.created_at >= start_of_month).scalar()
-                    
-            # Get total bans this year
-            total_bans_year = db.session.query(func.count(Bans.ban_id))\
-                .filter(Bans.created_at >= start_of_year).scalar()
-                    
-            # Get total unique servers with bans
-            total_servers = db.session.query(func.count(func.distinct(Bans.server_id))).scalar()
-            
-            # Get total unique members banned
-            total_members = db.session.query(func.count(func.distinct(Bans.member_id))).scalar()
-            
-            # Get monthly trend (last 6 months)
+            # Get monthly trend (last 6 months) in a separate query since it's more complex
             six_months_ago = current_date - timedelta(days=180)
             monthly_trend = db.session.query(
                 func.date_trunc('month', Bans.created_at).label('month'),
@@ -379,18 +368,29 @@ def init_routes(app):
             ]
             
             stats_data = {
-                'totalBans': total_bans,
-                'totalBansToday': total_bans_today,
-                'totalBansMonth': total_bans_month,
-                'totalBansYear': total_bans_year,
-                'totalServers': total_servers,
-                'totalMembers': total_members,
+                'totalBans': stats.total_bans or 0,
+                'totalBansToday': stats.total_bans_today or 0,
+                'totalBansMonth': stats.total_bans_month or 0,
+                'totalBansYear': stats.total_bans_year or 0,
+                'totalServers': stats.total_servers or 0,
+                'totalMembers': stats.total_members or 0,
                 'monthlyTrend': monthly_trend_data,
                 'currentServerTime': current_date.isoformat()
             }
             
-            # Trigger Pusher event for stats updates
-            trigger_stats_update(stats_data)
+            # Only trigger Pusher event if there are significant changes
+            # This reduces unnecessary Pusher events
+            if hasattr(current_app, 'last_stats'):
+                last_stats = current_app.last_stats
+                if (last_stats['totalBans'] != stats_data['totalBans'] or
+                    last_stats['totalBansToday'] != stats_data['totalBansToday'] or
+                    last_stats['totalBansMonth'] != stats_data['totalBansMonth']):
+                    trigger_stats_update(stats_data)
+            else:
+                trigger_stats_update(stats_data)
+            
+            # Cache the current stats
+            current_app.last_stats = stats_data
             
             return jsonify(stats_data), 200
                 

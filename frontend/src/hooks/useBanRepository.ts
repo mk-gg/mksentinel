@@ -11,7 +11,16 @@ interface CreateBanResponse {
 export function useBanRepository() {
   const repository = BanRepository.getInstance();
   const [bans, setBans] = useState<Ban[]>([]);
-  const [banStats, setBanStats] = useState<BanStatistics>({ totalBans: 0, totalBansToday: 0, totalBansMonth: 0 });
+  const [banStats, setBanStats] = useState<BanStatistics>({ 
+    totalBans: 0, 
+    totalBansToday: 0, 
+    totalBansMonth: 0,
+    totalBansYear: 0,
+    totalServers: 0,
+    totalMembers: 0,
+    monthlyTrend: [],
+    currentServerTime: new Date().toISOString()
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addBanListener } = usePusher();
