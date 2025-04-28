@@ -16,12 +16,22 @@ interface HealthStatus {
   };
 }
 
+interface Ban {
+  id: number;
+  user_id: string;
+  reason: string;
+  created_at: string;
+  // Add other relevant ban fields
+}
+
 interface PusherContextType {
   status: ConnectionStatus;
   lastPing: Date | null;
   healthStatus: HealthStatus | null;
   reconnect: () => void;
   checkHealth: () => Promise<void>;
+  recentBans: Ban[];
+  addBanListener: (event: string, callback: (data: any) => void) => () => void;
 }
 
 const PusherContext = createContext<PusherContextType>({
@@ -30,6 +40,8 @@ const PusherContext = createContext<PusherContextType>({
   healthStatus: null,
   reconnect: () => {},
   checkHealth: async () => {},
+  recentBans: [],
+  addBanListener: () => () => {},
 });
 
 export const usePusher = () => useContext(PusherContext);
@@ -39,6 +51,7 @@ export const PusherProvider: React.FC<{children: React.ReactNode}> = ({ children
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [lastPing, setLastPing] = useState<Date | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
+  const [recentBans, setRecentBans] = useState<Ban[]>([]);
 
   // Function to check server health
   const checkHealth = async () => {
@@ -104,6 +117,20 @@ export const PusherProvider: React.FC<{children: React.ReactNode}> = ({ children
       setLastPing(new Date());
     });
 
+    // Listen for ban updates
+    channel.bind('new-ban', (data: { ban: Ban }) => {
+      console.log('New ban received:', data);
+      setRecentBans(prev => [data.ban, ...prev].slice(0, 10));
+    });
+
+    channel.bind('ban-removed', (data: { ban_id: number }) => {
+      setRecentBans(prev => prev.filter(ban => ban.id !== data.ban_id));
+    });
+
+    channel.bind('ban-updated', (data: { ban: Ban }) => {
+      setRecentBans(prev => prev.map(ban => ban.id === data.ban.id ? data.ban : ban));
+    });
+
     setPusher(newPusher);
     
     // Ping the server to get initial status
@@ -146,13 +173,27 @@ export const PusherProvider: React.FC<{children: React.ReactNode}> = ({ children
     };
   }, []);
 
+  // Add ban event listener
+  const addBanListener = (event: string, callback: (data: any) => void) => {
+    if (!pusher) return () => {};
+    
+    const channel = pusher.channel('sentinel-status') || pusher.subscribe('sentinel-status');
+    channel.bind(event, callback);
+    
+    return () => {
+      channel.unbind(event, callback);
+    };
+  };
+
   return (
     <PusherContext.Provider value={{ 
       status, 
       lastPing, 
       healthStatus, 
       reconnect, 
-      checkHealth 
+      checkHealth,
+      recentBans,
+      addBanListener
     }}>
       {children}
     </PusherContext.Provider>

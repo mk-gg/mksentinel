@@ -51,7 +51,7 @@ export class ApiService {
   }
 
   static async createBan<T = unknown>(banData: any) {
-    return this.fetchWithAuth<T>('/api/bans', {
+    return this.fetchWithAuth<T>('/api/ban', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
