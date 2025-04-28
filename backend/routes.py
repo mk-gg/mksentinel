@@ -11,7 +11,7 @@ from sqlalchemy import func, text
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
-from pusher_service import trigger_server_status, trigger_event, trigger_new_ban, trigger_ban_removed, trigger_ban_updated
+from pusher_service import trigger_server_status, trigger_event, trigger_new_ban, trigger_ban_removed, trigger_ban_updated, trigger_stats_update
 import psycopg2
 
 
