@@ -11,7 +11,7 @@ from sqlalchemy import func, text
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
 
-from pusher_service import trigger_server_status, trigger_event
+from pusher_service import trigger_server_status, trigger_event, trigger_new_ban, trigger_ban_removed, trigger_ban_updated
 import psycopg2
 
 
@@ -216,9 +216,13 @@ def init_routes(app):
             db.session.add(new_ban)
             db.session.commit()
 
+            # Trigger Pusher event for real-time updates
+            ban_json = new_ban.to_json()
+            trigger_new_ban(ban_json)
+
             return jsonify({
                 'message': 'Ban created successfully',
-                'ban': new_ban.to_json()
+                'ban': ban_json
             }), 201
         except IntegrityError:
             db.sesssion.rollback()
@@ -238,6 +242,9 @@ def init_routes(app):
                 
             db.session.delete(ban)
             db.session.commit()
+            
+            # Trigger Pusher event for real-time updates
+            trigger_ban_removed(ban_id)
             
             return jsonify({'message': 'Ban deleted successfully'}), 200
         except Exception as e:
@@ -262,9 +269,14 @@ def init_routes(app):
                 ban.captured_message = data['capturedMessage']
                 
             db.session.commit()
+            
+            # Trigger Pusher event for real-time updates
+            ban_json = ban.to_json()
+            trigger_ban_updated(ban_json)
+            
             return jsonify({
                 'message': 'Ban updated successfully',
-                'ban': ban.to_json()
+                'ban': ban_json
             }), 200
         except Exception as e:
             db.session.rollback()
@@ -366,7 +378,7 @@ def init_routes(app):
                 for month, count in monthly_trend
             ]
             
-            return jsonify({
+            stats_data = {
                 'totalBans': total_bans,
                 'totalBansToday': total_bans_today,
                 'totalBansMonth': total_bans_month,
@@ -375,7 +387,12 @@ def init_routes(app):
                 'totalMembers': total_members,
                 'monthlyTrend': monthly_trend_data,
                 'currentServerTime': current_date.isoformat()
-            }), 200
+            }
+            
+            # Trigger Pusher event for stats updates
+            trigger_stats_update(stats_data)
+            
+            return jsonify(stats_data), 200
                 
         except Exception as e:
             return jsonify({'error': str(e)}), 400

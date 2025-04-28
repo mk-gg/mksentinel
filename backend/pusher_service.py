@@ -38,4 +38,46 @@ def trigger_server_status():
         'timestamp': __import__('datetime').datetime.now().isoformat()
     })
 
-# You can add more functions specific to your application needs
+def trigger_new_ban(ban_json):
+    """
+    Trigger a new ban event
+    
+    Args:
+        ban_json (dict): The ban data in JSON format
+    """
+    return trigger_event('sentinel-status', 'new-ban', {
+        'ban': ban_json
+    })
+
+def trigger_ban_removed(ban_id):
+    """
+    Trigger a ban removed event
+    
+    Args:
+        ban_id (int): The ID of the removed ban
+    """
+    return trigger_event('sentinel-status', 'ban-removed', {
+        'ban_id': ban_id
+    })
+
+def trigger_ban_updated(ban_json):
+    """
+    Trigger a ban updated event
+    
+    Args:
+        ban_json (dict): The updated ban data in JSON format
+    """
+    return trigger_event('sentinel-status', 'ban-updated', {
+        'ban': ban_json
+    })
+
+def trigger_stats_update(stats_data):
+    """
+    Trigger a statistics update event
+    
+    Args:
+        stats_data (dict): The statistics data
+    """
+    return trigger_event('sentinel-status', 'stats-update', {
+        'stats': stats_data
+    })

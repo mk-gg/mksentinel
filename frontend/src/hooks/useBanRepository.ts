@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BanRepository, Ban, BanStatistics } from '@/repositories/banRepository';
+import { usePusher } from '@/contexts/PusherContext';
 
 // Define the response type for createBan
 interface CreateBanResponse {
@@ -13,6 +14,7 @@ export function useBanRepository() {
   const [banStats, setBanStats] = useState<BanStatistics>({ totalBans: 0, totalBansToday: 0, totalBansMonth: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addBanListener } = usePusher();
 
   const fetchBans = useCallback(async (forceRefresh = false) => {
     setLoading(true);
@@ -72,22 +74,6 @@ export function useBanRepository() {
             }));
           }
         }
-        
-        // Quietly refresh the data in the background to ensure consistency
-        setTimeout(() => {
-          Promise.all([
-            repository.getBans(true).then(result => {
-              if (!result.error) {
-                setBans(result.bans);
-              }
-            }),
-            repository.getBanStatistics(true).then(result => {
-              if (!result.error) {
-                setBanStats(result.stats);
-              }
-            })
-          ]);
-        }, 2000);
       }
       
       return result;
@@ -119,16 +105,6 @@ export function useBanRepository() {
               : ban
           )
         );
-        
-        // Quietly refresh the data in the background to ensure consistency
-        // but don't wait for it or show loading indicators
-        setTimeout(() => {
-          repository.getBans(true).then(result => {
-            if (!result.error) {
-              setBans(result.bans);
-            }
-          });
-        }, 2000);
       }
       
       return result;
@@ -151,21 +127,9 @@ export function useBanRepository() {
           setBanStats(prevStats => ({
             ...prevStats,
             totalBans: Math.max(0, prevStats.totalBans - 1),
-            // We can't be sure if the ban was from today or this month, so refresh those stats
+            // We can't be sure if the ban was from today or this month, so don't update those
           }));
         }
-        
-        // Quietly refresh the statistics to get accurate data
-        fetchBanStatistics(true);
-        
-        // Quietly refresh the data in the background to ensure consistency
-        setTimeout(() => {
-          repository.getBans(true).then(result => {
-            if (!result.error) {
-              setBans(result.bans);
-            }
-          });
-        }, 2000);
       }
       
       return result;
@@ -173,12 +137,68 @@ export function useBanRepository() {
       console.error('Error in useBanRepository.deleteBan:', err);
       throw err;
     }
-  }, [repository, fetchBanStatistics, banStats]);
+  }, [repository, banStats]);
+
+  // Set up real-time updates via Pusher
+  useEffect(() => {
+    // Listen for new bans
+    const newBanUnbind = addBanListener('new-ban', (data: { ban: Ban }) => {
+      setBans(prevBans => {
+        // Check if the ban is already in the list
+        const exists = prevBans.some(ban => ban.banId === data.ban.banId);
+        if (!exists) {
+          // Add to the beginning of the array
+          return [data.ban, ...prevBans];
+        }
+        return prevBans;
+      });
+      
+      // Update statistics
+      setBanStats(prevStats => ({
+        ...prevStats,
+        totalBans: prevStats.totalBans + 1,
+        totalBansToday: prevStats.totalBansToday + 1,
+        totalBansMonth: prevStats.totalBansMonth + 1
+      }));
+    });
+    
+    // Listen for ban removals
+    const removeBanUnbind = addBanListener('ban-removed', (data: { ban_id: number }) => {
+      setBans(prevBans => prevBans.filter(ban => ban.banId !== data.ban_id));
+      
+      // Update statistics
+      setBanStats(prevStats => ({
+        ...prevStats,
+        totalBans: Math.max(0, prevStats.totalBans - 1),
+        // We can't be sure if the ban was from today or this month, so don't update those
+      }));
+    });
+    
+    // Listen for ban updates
+    const updateBanUnbind = addBanListener('ban-updated', (data: { ban: Ban }) => {
+      setBans(prevBans => prevBans.map(ban => 
+        ban.banId === data.ban.banId ? data.ban : ban
+      ));
+    });
+    
+    // Listen for statistics updates
+    const statsUpdateUnbind = addBanListener('stats-update', (data: { stats: BanStatistics }) => {
+      setBanStats(data.stats);
+    });
+    
+    return () => {
+      newBanUnbind();
+      removeBanUnbind();
+      updateBanUnbind();
+      statsUpdateUnbind();
+    };
+  }, [addBanListener]);
 
   // Initial data loading effect
   useEffect(() => {
     fetchBans();
-  }, [fetchBans]);
+    fetchBanStatistics();
+  }, [fetchBans, fetchBanStatistics]);
 
   return {
     bans,
