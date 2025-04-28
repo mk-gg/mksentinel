@@ -6,7 +6,7 @@ import requests
 from urllib.parse import urlencode
 from flask import abort, current_app, flash, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import func, text
+from sqlalchemy import func, text, case
 
 from decorators import auth_required, admin_required
 from models import db, User, Member, Server, Bans
